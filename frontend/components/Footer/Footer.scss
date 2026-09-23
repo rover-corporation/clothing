@@ -1,0 +1,175 @@
+.main-footer {
+  background: #111827;
+  color: white;
+  padding: 3rem 0 1rem;
+  margin-top: auto;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  margin-bottom: 2rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 2fr;
+    gap: 4rem;
+  }
+}
+
+.footer-brand {
+  max-width: 320px;
+}
+
+.footer-logo {
+  margin-bottom: 1rem;
+  display: inline-block;
+  line-height: 0;
+  transition: opacity 0.3s ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  svg {
+    display: block;
+  }
+}
+
+.footer-description {
+  color: #9ca3af;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+  }
+}
+
+.link-group-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.footer-link {
+  display: block;
+  color: #9ca3af;
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease, transform 0.2s ease;
+  font-size: 0.95rem;
+
+  &:hover {
+    color: #ffffff;
+    transform: translateX(3px);
+  }
+}
+
+/* 🔥 Нижняя часть футера */
+.footer-bottom {
+  border-top: 1px solid #374151;
+  padding-top: 2rem;
+}
+
+.footer-bottom-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between; // Распределяет: копирайт слева, RoVer справа (но не в край)
+    align-items: center;
+    text-align: left;
+    max-width: 90%; // Не прижимать к самым краям контейнера
+    margin: 0 auto; // Центрируем блок внутри .container
+  }
+}
+
+.copyright {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* 🔥🔥 RoVer digital: огненный стиль */
+.rover-credit {
+  text-decoration: none;
+  font-size: 0.875rem;
+  color: #6b7280;
+  transition: color 0.3s ease;
+
+  .rover-name {
+    // Градиентный текст (оранжево-огненный)
+    background: linear-gradient(135deg, #f97316, #fb923c, #fdba74);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+
+    // Лёгкое свечение при ховере
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #f97316, transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+  }
+
+  &:hover {
+    color: #9ca3af;
+
+    .rover-name {
+      // Усиливаем свечение
+      filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.5));
+      
+      &::after {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+/* 📱 Мобильный адаптив */
+@media (max-width: 767px) {
+  .main-footer {
+    padding: 2.5rem 0 1rem;
+  }
+
+  .footer-links {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .footer-content {
+    gap: 2rem;
+  }
+
+  .footer-description {
+    font-size: 0.9rem;
+  }
+
+  .footer-bottom-inner {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

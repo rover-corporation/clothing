@@ -1,0 +1,100 @@
+.faq-section {
+  padding: 4rem 0;
+  background: #f8fafc;
+}
+
+.faq-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: start;
+
+  @media (min-width: 992px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+}
+
+// 🔥 Явные отступы между заголовком и текстом
+.section-heading {
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.faq-intro {
+  font-size: 1.125rem;
+  color: #6b7280;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.faq-items {
+  margin-bottom: 2rem;
+}
+
+.faq-item {
+  margin-bottom: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.faq-question {
+  width: 100%;
+  padding: 1.25rem 1.5rem;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #111827;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background: #f9fafb;
+  }
+
+  &.active {
+    background: #f1f5f9;
+    color: #2563eb;
+  }
+}
+
+// 🔥 Надёжная анимация аккордеона (без Vue <transition>)
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.4s ease;
+  
+  p {
+    margin: 0;
+    padding: 0 1.5rem 1.5rem;
+    color: #4b5563;
+    line-height: 1.6;
+  }
+
+  &.open {
+    max-height: 1000px; // Достаточно большое значение для любого текста
+    opacity: 1;
+  }
+}
+
+.faq-image {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 1rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+
+  @media (min-width: 768px) {
+    height: 450px;
+  }
+
+  @media (min-width: 992px) {
+    position: sticky;
+    top: 100px;
+  }
+}

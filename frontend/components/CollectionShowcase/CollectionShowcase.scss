@@ -1,0 +1,180 @@
+.studio-showcase {
+  padding: 4rem 0;
+  background: #ffffff;
+}
+
+.showcase-content {
+  text-align: center;
+}
+
+.section-heading {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #111827;
+
+  @media (min-width: 768px) {
+    font-size: 2.5rem;
+  }
+}
+
+.section-subtitle {
+  font-size: 1.125rem;
+  color: #6b7280;
+  margin-bottom: 3rem;
+}
+
+/* Слайдер */
+.studio-gallery {
+  position: relative;
+  margin-bottom: 2rem;
+  min-height: 600px; /* Фиксирует высоту, чтобы макет не прыгал при анимации */
+}
+
+/* Vue Transition Classes */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.gallery-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+
+  @media (min-width: 768px) {
+    height: 500px;
+  }
+}
+
+.gallery-info {
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.gallery-info h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #111827;
+
+  @media (min-width: 768px) {
+    font-size: 2rem;
+  }
+}
+
+.gallery-info p {
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+/* Бейдж */
+.studio-badge {
+  display: inline-block;
+  background: #2563eb;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* Фичи */
+.studio-features-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.studio-feature {
+  background: #f1f5f9;
+  color: #475569;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Кнопки действий */
+.studio-card-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Контролы слайдера */
+.gallery-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.gallery-prev,
+.gallery-next {
+  padding: 0.75rem 1.5rem;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  font-weight: 600;
+
+  &:hover {
+    background: #1d4ed8;
+  }
+}
+
+/* Точки-индикаторы */
+.gallery-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.gallery-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #d1d5db;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+
+  &.active {
+    background: #2563eb;
+  }
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+  .studio-card-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .gallery-prev,
+  .gallery-next {
+    width: 100%;
+    max-width: 200px;
+  }
+}
