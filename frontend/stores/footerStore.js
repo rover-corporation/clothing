@@ -11,15 +11,15 @@ export const useFooterStore = defineStore('footerStore', () => {
         { path: '#faq', label: 'Вопросы' }
     ]);
 
+    // 🔥 Обновленные ссылки на юридические страницы
     const legalLinks = ref([
-        { path: '#privacy', label: 'Политика конфиденциальности' },
-        { path: '#terms', label: 'Условия использования' }
+        { path: '/privacy', label: 'Политика конфиденциальности' },
+        { path: '/personal', label: 'Политика обработки персональных данных' }
     ]);
 
     const brandDescription = ref("Одежда, созданная с вниманием к деталям. Натуральные ткани, безупречный крой и философия осознанного стиля.");
     const copyright = ref("Все права защищены.");
 
-    // 🔥 Добавляем данные о разработчике
     const developer = ref({
         name: "RoVer digital",
         url: "https://vk.ru/rover.vladikavkaz"
