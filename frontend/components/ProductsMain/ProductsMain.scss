@@ -1,29 +1,124 @@
-.products
-{
-    padding: 80px 0;
+.products {
+  padding: 5rem 0;
+  background: #fafafa;
 }
 
-.products-general
-{
+.products-general {
+  text-align: center;
+  margin-bottom: 4rem;
+  padding: 0 1rem;
+
+  h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    color: #111827;
+    margin: 0 0 0.75rem 0;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(0.95rem, 2vw, 1.125rem);
+    color: #6b7280;
+    margin: 0;
+    font-weight: 400;
+    max-width: 600px;
+    margin-inline: auto;
+  }
+}
+
+.products-catalog {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 3rem;
+  align-items: start;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+.products-filters {
+  position: sticky;
+  top: 100px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+  z-index: 10;
+
+  @media (max-width: 900px) {
+    position: relative;
+    top: 0;
+    padding: 1.25rem;
+    border-radius: 1rem;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 20px;
+    gap: 1.5rem;
+  }
 }
 
-.products-catalog
-{
-    width: 100%;
-    display: grid;
-    grid-template-columns: 250px auto;
-    gap: 15px;
+.products-filters > div[style*="background: #f3f4f6"] {
+  display: none;
 }
 
+.product-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1.25rem;
+  width: 100%;
 
-.product-list
-{
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 10px;
+  > a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    
+    @for $i from 1 through 12 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{$i * 0.08}s;
+      }
+    }
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 480px) {
+  .products {
+    padding: 3rem 0;
+  }
+
+  .products-general {
+    margin-bottom: 2.5rem;
+  }
+
+  .product-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .products-filters {
+    padding: 1rem;
+    
+    :deep(.filter-title) {
+      font-size: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+  }
 }

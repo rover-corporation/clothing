@@ -1,43 +1,130 @@
 .size-filter {
-  margin-bottom: 20px;
+  margin-bottom: 2.5rem;
 
   .filter-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 12px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #9ca3af;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    // Фирменная акцентная точка (единый стиль для всех фильтров)
+    &::before {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 6px;
+      background: #2563eb;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
+    }
   }
 
   .sizes-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 0.75rem; // 12px воздуха между кнопками
   }
 
   .size-btn {
-    display: flex;
+    position: relative;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 44px;
-    height: 44px;
-    padding: 0 10px;
-    background: #ffffff;
-    border: 1px solid #d1d5db; // Светло-серый бордер
-    border-radius: 6px; // Немного скругленные углы
-    font-size: 14px;
-    font-weight: 500;
-    color: #374151;
+    
+    // Фиксированные пропорции для создания аккуратной сетки
+    min-width: 3.25rem; // ~52px
+    height: 3.25rem;
+    padding: 0 0.75rem;
+    
+    // Стеклянный эффект
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(4px);
+    
+    // Мягкий квадрат (отличается от овальных кнопок материалов)
+    border: 1px solid rgba(209, 213, 219, 0.6);
+    border-radius: 10px; 
+    
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4b5563;
+    
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
+    user-select: none;
+    overflow: hidden; // Для эффекта блика
+    
+    // 🔥 Пружинистая анимация (Spring physics)
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 
     &:hover {
-      border-color: #9ca3af; // При наведении бордер темнеет
+      transform: translateY(-2px);
+      border-color: #9ca3af;
+      color: #111827;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
-    /* Стили для активного (выбранного) размера */
+    // Тактильный отклик при нажатии
+    &:active {
+      transform: scale(0.92) translateY(0);
+      transition-duration: 0.1s;
+    }
+
+    /* 🔥 Стили для активного (выбранного) размера */
     &.is-active {
-      background-color: #111827; // Темный фон (или любой акцентный цвет твоего сайта)
+      background: #111827;
       border-color: #111827;
-      color: #ffffff; // Белый текст
+      color: #ffffff;
+      box-shadow: 0 6px 20px rgba(17, 24, 39, 0.25);
+      transform: scale(1.05); // Легкое "всплытие"
+
+      // Бесконечный блик (Shimmer effect), как в MaterialFilter
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.15),
+          transparent
+        );
+        transform: skewX(-20deg);
+        animation: shimmer 2.5s infinite;
+      }
+    }
+
+    // Доступность: обводка при навигации с клавиатуры
+    &:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 3px;
+    }
+  }
+}
+
+// 🔥 Анимация блика
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+// 🔥 Адаптив для очень маленьких экранов (320px)
+@media (max-width: 360px) {
+  .size-filter {
+    .size-btn {
+      min-width: 2.75rem; // ~44px, чтобы влезало 4-5 кнопок в ряд
+      height: 2.75rem;
+      font-size: 0.8rem;
+      border-radius: 8px;
     }
   }
 }

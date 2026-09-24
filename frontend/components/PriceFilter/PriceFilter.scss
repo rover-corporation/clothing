@@ -1,49 +1,91 @@
 .price-filter {
-  margin-bottom: 20px;
+  margin-bottom: 2.5rem;
 
   .filter-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 12px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #9ca3af;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    // Фирменная акцентная точка (как в MaterialFilter)
+    &::before {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 6px;
+      background: #2563eb;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
+    }
   }
 
   .price-inputs {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0.75rem; // 12px воздуха между элементами
   }
 
   .input-wrapper {
     position: relative;
     display: flex;
     align-items: center;
-    background: #ffffff;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    padding: 0 10px;
-    transition: border-color 0.2s;
+    flex: 1; // Равномерное распределение пространства
+    min-width: 0; // Предотвращает переполнение flex-контейнера на 320px
+    
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(4px);
+    
+    border: 1px solid rgba(209, 213, 219, 0.6);
+    border-radius: 12px; // Чуть мягче, чем 8px
+    padding: 0 0.75rem;
+    
+    // 🔥 Плавная пружинистая анимация
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
+    // Состояние, когда input внутри получает фокус
     &:focus-within {
-      border-color: #111827; // Темнеет при фокусе
+      border-color: #111827;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(17, 24, 39, 0.08);
+      transform: translateY(-1px); // Микро-всплытие
     }
   }
 
   .input-prefix {
-    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
     color: #9ca3af;
-    margin-right: 4px;
+    margin-right: 0.25rem;
+    pointer-events: none; // Клик по "от/до" передает фокус в input
+    user-select: none;
   }
 
   input {
-    width: 70px; // Ширина поля
-    height: 40px;
+    width: 100%;
+    height: 2.75rem; // ~44px, идеальный тач-таргет для мобильных
     border: none;
     outline: none;
-    font-size: 14px;
-    color: #374151;
     background: transparent;
+    
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #111827;
+    transition: color 0.2s;
 
-    /* Убираем стандартные стрелочки у input type="number" для красоты */
+    &::placeholder {
+      color: #d1d5db;
+      font-weight: 400;
+    }
+
+    /* Убираем стандартные стрелочки (спиннеры) */
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
       -webkit-appearance: none;
@@ -53,7 +95,32 @@
   }
 
   .separator {
-    color: #9ca3af;
-    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
+    color: #d1d5db;
+    font-weight: 400;
+    font-size: 1rem;
+    flex-shrink: 0; // Запрещаем сжиматься разделителю
+  }
+}
+
+// 🔥 Адаптив для очень маленьких экранов (320px)
+@media (max-width: 360px) {
+  .price-filter {
+    .price-inputs {
+      gap: 0.5rem;
+    }
+    
+    .input-wrapper {
+      padding: 0 0.5rem;
+    }
+    
+    input {
+      font-size: 0.85rem;
+      height: 2.5rem; // Чуть компактнее, но все еще удобно
+    }
+    
+    .separator {
+      font-size: 0.85rem;
+    }
   }
 }
