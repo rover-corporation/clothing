@@ -29,7 +29,13 @@
                 </div>
 
                 <div class="product-list">
-                    <ProductCard/>
+                    <div v-for="item in productMockup">
+                        <NuxtLink :to="`/catalog/${item.id}`">
+                            <ProductCard  :prod-obj="item"/>
+                        </NuxtLink>
+                        
+
+                    </div>
                 </div>
 
             </div>
@@ -39,18 +45,47 @@
 </template>
 
 <script setup>
-import { ref } from 'vue' 
+import { ref, reactive } from 'vue' 
 import ProductCard from '@/components/ProductCard/ProductCard.vue'
 import PriceFilter from '@/components/PriceFilter/PriceFilter.vue' // Новый импорт
 import ColorFilter from '@/components/ColorFilter/ColorFilter.vue'
 import SizeFilter from '@/components/SizeFilter/SizeFilter.vue'
 import MaterialFilter from '@/components/MaterialFilter/MaterialFilter.vue'
 
+import dress from '@/assets/images/banner.webp'
+
 // Реактивные переменные
 const selectedPrice = ref({ min: null, max: null }) // Объект для цены
 const selectedColors = ref([])
 const selectedSizes = ref([])
 const selectedMaterials = ref([])
+
+const productMockup = reactive([
+    {
+        id: 1,
+        img: dress,
+        name: 'Платье',
+        price: 6000,
+
+    },
+    {
+        id: 2,
+        img: dress,
+        name: 'Брюки',
+        price: 6000,
+
+    },
+    {
+        id: 3,
+        img: dress,
+        name: 'Юбка',
+        price: 6000,
+
+    },
+])
+
+
+
 </script>
 
 <style lang="scss" scoped>
