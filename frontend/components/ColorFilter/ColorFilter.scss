@@ -1,0 +1,50 @@
+.color-filter {
+  margin-bottom: 20px;
+
+  .filter-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .colors-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .color-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 20px;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #f0f0f0;
+    }
+
+    /* Стили для активного (выбранного) цвета */
+    &.is-active .color-circle {
+      outline: 2px solid #000;
+      outline-offset: 2px;
+    }
+  }
+
+  .color-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid #e0e0e0; // для белого цвета, чтобы он не сливался с фоном
+    transition: all 0.2s;
+  }
+
+  .color-label {
+    font-size: 14px;
+    color: #333;
+  }
+}

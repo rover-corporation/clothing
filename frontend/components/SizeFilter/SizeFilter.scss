@@ -1,0 +1,43 @@
+.size-filter {
+  margin-bottom: 20px;
+
+  .filter-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .sizes-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .size-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    padding: 0 10px;
+    background: #ffffff;
+    border: 1px solid #d1d5db; // Светло-серый бордер
+    border-radius: 6px; // Немного скругленные углы
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      border-color: #9ca3af; // При наведении бордер темнеет
+    }
+
+    /* Стили для активного (выбранного) размера */
+    &.is-active {
+      background-color: #111827; // Темный фон (или любой акцентный цвет твоего сайта)
+      border-color: #111827;
+      color: #ffffff; // Белый текст
+    }
+  }
+}

@@ -1,0 +1,41 @@
+.material-filter {
+  margin-bottom: 20px;
+
+  .filter-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .materials-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .material-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px; // Делаем кнопку шире, чтобы влез текст
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 20px; // Делаем "овальные" кнопки (chips)
+    font-size: 14px;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      background-color: #f3f4f6;
+      border-color: #9ca3af;
+    }
+
+    /* Стили для активного (выбранного) материала */
+    &.is-active {
+      background-color: #111827; // Акцентный темный цвет
+      border-color: #111827;
+      color: #ffffff;
+    }
+  }
+}
