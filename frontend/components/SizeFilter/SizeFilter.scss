@@ -2,7 +2,7 @@
   margin-bottom: 2.5rem;
 
   .filter-title {
-    font-family: 'Montserrat', sans-serif;
+    
     font-size: 0.8rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -50,7 +50,7 @@
     border: 1px solid rgba(209, 213, 219, 0.6);
     border-radius: 10px; 
     
-    font-family: 'Montserrat', sans-serif;
+    
     font-size: 0.9rem;
     font-weight: 600;
     color: #4b5563;
@@ -78,8 +78,8 @@
 
     /* 🔥 Стили для активного (выбранного) размера */
     &.is-active {
-      background: #111827;
-      border-color: #111827;
+      background: #2663eb;
+      // border-color: #111827;
       color: #ffffff;
       box-shadow: 0 6px 20px rgba(17, 24, 39, 0.25);
       transform: scale(1.05); // Легкое "всплытие"

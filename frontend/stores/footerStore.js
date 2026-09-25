@@ -3,12 +3,12 @@ import { ref } from "vue";
 
 export const useFooterStore = defineStore('footerStore', () => {
     const navLinks = ref([
-        { path: '#home', label: 'Главная' },
-        { path: '#about', label: 'О бренде' },
-        { path: '#collections', label: 'Коллекции' },
-        { path: '#materials', label: 'Материалы' },
-        { path: '#process', label: 'Процесс' },
-        { path: '#faq', label: 'Вопросы' }
+        { path: '/', label: 'Главная' },
+        { path: '/#about', label: 'О бренде' },
+        { path: '/#collections', label: 'Коллекции' },
+        { path: '/#materials', label: 'Материалы' },
+        { path: '/#process', label: 'Процесс' },
+        { path: '/#faq', label: 'Вопросы' }
     ]);
 
     // 🔥 Обновленные ссылки на юридические страницы
@@ -21,7 +21,7 @@ export const useFooterStore = defineStore('footerStore', () => {
     const copyright = ref("Все права защищены.");
 
     const developer = ref({
-        name: "RoVer digital",
+        name: "RoVer Digital",
         url: "https://vk.ru/rover.vladikavkaz"
     });
 

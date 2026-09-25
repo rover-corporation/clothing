@@ -1,126 +1,99 @@
-.price-filter {
-  margin-bottom: 2.5rem;
-
-  .filter-title {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #9ca3af;
-    margin-bottom: 1.25rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-
-    // Фирменная акцентная точка (как в MaterialFilter)
-    &::before {
-      content: '';
-      display: block;
-      width: 6px;
-      height: 6px;
-      background: #2563eb;
-      border-radius: 50%;
-      box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
-    }
-  }
-
-  .price-inputs {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem; // 12px воздуха между элементами
-  }
-
-  .input-wrapper {
+  // 🔥 Стили для двойного ползунка
+  .range-slider {
     position: relative;
+    height: 6px;
+    margin: 1.5rem 0.25rem; // Отступы по бокам, чтобы тени ползунков не обрезались
+    
+    .slider-track {
+      position: absolute;
+      width: 100%;
+      height: 6px;
+      background: rgba(209, 213, 219, 0.6);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    
+    .slider-range {
+      position: absolute;
+      height: 100%;
+      background: #2563eb; // Фирменный акцентный цвет
+      border-radius: 3px;
+      transition: left 0.2s ease, right 0.2s ease;
+    }
+    
+    .range-thumb {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      pointer-events: none; // Клики проходят сквозь трек, но не сквозь thumb
+      -webkit-appearance: none;
+      appearance: none;
+      margin: 0;
+      
+      // Стилизация ползунка для WebKit (Chrome, Safari, Edge)
+      &::-webkit-slider-thumb {
+        pointer-events: auto;
+        -webkit-appearance: none;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 2px solid #2563eb;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+        cursor: grab;
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
+        margin-top: -8px; // Центрирование относительно трека высотой 6px
+        
+        &:hover {
+          transform: scale(1.1);
+          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+        
+        &:active {
+          cursor: grabbing;
+          transform: scale(0.95);
+        }
+      }
+      
+      // Стилизация ползунка для Firefox
+      &::-moz-range-thumb {
+        pointer-events: auto;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 2px solid #2563eb;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+        cursor: grab;
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
+        
+        &:hover {
+          transform: scale(1.1);
+        }
+        &:active {
+          cursor: grabbing;
+          transform: scale(0.95);
+        }
+      }
+      
+      // Скрываем стандартные треки браузеров
+      &::-webkit-slider-runnable-track {
+        background: transparent;
+        height: 6px;
+      }
+      &::-moz-range-track {
+        background: transparent;
+        height: 6px;
+      }
+    }
+  }
+
+  .price-inputs
+  {
     display: flex;
     align-items: center;
-    flex: 1; // Равномерное распределение пространства
-    min-width: 0; // Предотвращает переполнение flex-контейнера на 320px
-    
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(4px);
-    
-    border: 1px solid rgba(209, 213, 219, 0.6);
-    border-radius: 12px; // Чуть мягче, чем 8px
-    padding: 0 0.75rem;
-    
-    // 🔥 Плавная пружинистая анимация
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-    // Состояние, когда input внутри получает фокус
-    &:focus-within {
-      border-color: #111827;
-      background: #ffffff;
-      box-shadow: 0 4px 12px rgba(17, 24, 39, 0.08);
-      transform: translateY(-1px); // Микро-всплытие
-    }
+    gap: 20px;
   }
-
-  .input-prefix {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: #9ca3af;
-    margin-right: 0.25rem;
-    pointer-events: none; // Клик по "от/до" передает фокус в input
-    user-select: none;
-  }
-
-  input {
-    width: 100%;
-    height: 2.75rem; // ~44px, идеальный тач-таргет для мобильных
-    border: none;
-    outline: none;
-    background: transparent;
-    
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #111827;
-    transition: color 0.2s;
-
-    &::placeholder {
-      color: #d1d5db;
-      font-weight: 400;
-    }
-
-    /* Убираем стандартные стрелочки (спиннеры) */
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    -moz-appearance: textfield;
-  }
-
-  .separator {
-    font-family: 'Montserrat', sans-serif;
-    color: #d1d5db;
-    font-weight: 400;
-    font-size: 1rem;
-    flex-shrink: 0; // Запрещаем сжиматься разделителю
-  }
-}
-
-// 🔥 Адаптив для очень маленьких экранов (320px)
-@media (max-width: 360px) {
-  .price-filter {
-    .price-inputs {
-      gap: 0.5rem;
-    }
-    
-    .input-wrapper {
-      padding: 0 0.5rem;
-    }
-    
-    input {
-      font-size: 0.85rem;
-      height: 2.5rem; // Чуть компактнее, но все еще удобно
-    }
-    
-    .separator {
-      font-size: 0.85rem;
-    }
-  }
-}

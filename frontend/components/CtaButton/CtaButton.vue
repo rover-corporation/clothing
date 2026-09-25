@@ -1,12 +1,12 @@
 <template>
-  <button 
-    type="button" 
+  <div 
+     
     class="cta-button" 
     :class="[`cta-button--${variant}`]"
     @click="$emit('click', $event)"
   >
     <slot />
-  </button>
+</div>
 </template>
 
 <script setup>

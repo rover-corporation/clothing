@@ -3,15 +3,18 @@
   background: #ffffff;
   border-radius: 1rem;
   overflow: hidden;
+  border: 1px solid #f3f4f6; // Легкая граница
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              box-shadow 0.4s ease, 
+              border-color 0.4s ease;
   animation: cardFadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   opacity: 0;
 
   &:hover {
-    transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    transform: translateY(-6px);
+    border-color: rgba(37, 99, 235, 0.2); // Синяя подсветка границы
+    box-shadow: 0 16px 32px rgba(37, 99, 235, 0.12); // Мягкая синеватая тень
   }
 }
 
@@ -29,105 +32,84 @@
     transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(17, 24, 39, 0.3) 0%, transparent 40%);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-  }
+  // Градиент полностью удален
 
   &:hover {
-    img { transform: scale(1.05); }
-    &::after { opacity: 1; }
+    img { 
+      transform: scale(1.05); 
+    }
   }
+}
+
+.prod-content {
+  position: relative;
+  z-index: 1;
+  background: #ffffff; // Явный белый фон
+  padding: 1.25rem; // Равномерные внутренние отступы
+  // Отрицательный margin удален, теперь контент идет строго после картинки
 }
 
 .prod-title {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 1.15rem;
+  font-weight: 700;
   color: #111827;
-  margin: 0.85rem 0.85rem 0.25rem;
+  margin: 0 0 0.5rem;
   line-height: 1.3;
-  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+.prod-desc {
+  font-size: 0.85rem;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0 0 1.25rem;
+  
+  // Ограничиваем описание 2 строками с многоточием
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+.prod-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 7px;
+  padding-top: 1rem;
+  border-top: 1px solid #f3f4f6; // Аккуратный разделитель
 }
 
 .prod-price {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: #6b7280;
-  padding: 0 0.85rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2563eb; // Фирменный акцентный синий
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.prod-action {
+  flex: 1;
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  &::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: #e5e7eb;
-    transition: background 0.3s ease, transform 0.4s ease;
-  }
-
-  .prod:hover &::after {
-    background: #2563eb;
-    transform: scaleX(0);
-    transform-origin: right;
-  }
-}
-
-:deep(.cta-button), :deep(button), :deep(a.cta-btn) {
-  margin: 0 0.85rem 0.85rem;
-  width: calc(100% - 1.7rem);
-  opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: transparent ;
-  border: 1px solid #e5e7eb ;
-  color: #111827 ;
-  font-size: 0.8rem ;
-  font-weight: 600 ;
-  letter-spacing: 0.03em ;
-  border-radius: 0.5rem ;
-  padding: 0.5rem 0 ;
-  text-align: center;
-  text-transform: uppercase;
-
-  &:hover {
-    background: #111827 ;
-    border-color: #111827 ;
-    color: #ffffff ;
-    box-shadow: 0 4px 12px rgba(17, 24, 39, 0.15) ;
-  }
-}
-
-.prod:hover :deep(.cta-button),
-.prod:hover :deep(button),
-.prod:hover :deep(a.cta-btn) {
-  opacity: 1;
-  transform: translateY(0);
+  justify-content: flex-end;
 }
 
 @keyframes cardFadeIn {
-  from { opacity: 0; transform: translateY(16px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from { 
+    opacity: 0; 
+    transform: translateY(16px) scale(0.98); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+  }
 }
 
-@media (hover: none) and (pointer: coarse), (max-width: 768px) {
+// Адаптив для тач-устройств
+@media (hover: none) and (pointer: coarse) {
   .prod:hover {
     transform: none;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  }
-  
-  :deep(.cta-button), :deep(button), :deep(a.cta-btn) {
-    opacity: 1 ;
-    transform: none ;
-    margin-bottom: 0.85rem;
+    border-color: #f3f4f6;
   }
 }

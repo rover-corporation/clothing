@@ -30,18 +30,33 @@
 <script setup>
     import Logo from '~/assets/svg/Logo.vue';
     import { useHeaderStore } from '~/stores/headerStore';
+    import { watch } from 'vue';
     
 
 
     const headerStore = useHeaderStore()
     const {headerLinks} = headerStore
-    console.log(headerLinks)
+    
 
     const isMenuOpen = ref(false)
 
     const toggleMenu = () => {
+
     isMenuOpen.value = !isMenuOpen.value
+
     }
+
+
+    watch(isMenuOpen, (isOpen) =>
+    {
+      if(isOpen)
+    {
+      document.body.style.overflow = 'hidden';
+    } else 
+    {
+      document.body.style.overflow = '';
+    }
+    })
 </script>
 
 <style lang="scss" scoped>
