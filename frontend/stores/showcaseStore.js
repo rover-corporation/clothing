@@ -2,40 +2,68 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 
 
-import dress1 from '@/assets/images/dress-evening.webp'
-import dress2 from '@/assets/images/dress-casual.webp'
-import dress3 from '@/assets/images/dress-summer.webp'
+import { useCollectionShowApi } from "~/api/collectionShow";
 
 export const useShowcaseStore = defineStore('showcaseStore', () => {
-    const heading = ref("Коллекции сезона");
-    const subtitle = ref("Платья, которые становятся частью вашей истории");
+    const heading = ref("");
+    const subtitle = ref("");
+    const items = ref([]);
     
-    
-    const items = ref([
-        {
-            title: "Вечерняя элегантность",
-            description: "Платья из струящегося шёлка для особых случаев. Идеальный крой, который подчёркивает силуэт.",
-            image: dress1,
-            badge: "NEW",
-            features: ["Шёлк", "Ручная работа", "Италия"]
-        },
-        {
-            title: "Городской комфорт",
-            description: "Универсальные платья на каждый день. Натуральные ткани, свободный крой, никаких компромиссов.",
-            image: dress2,
-            badge: "HIT",
-            features: ["Хлопок", "Унисекс", "Эко"]
-        },
-        {
-            title: "Лёгкость лета",
-            description: "Воздушные платья из льна для тёплых дней. Дышащие ткани и минималистичный дизайн.",
-            image: dress3,
-            badge: "SALE",
-            features: ["Лён", "Лёгкость", "Универсальность"]
+    const isLoading = ref(false);
+    const error = ref(null);
+
+    const loadShowcaseData = async () => {
+        // Если уже есть данные, отдаем их для SSR
+        if (heading.value) return { heading: heading.value, subtitle: subtitle.value, items: items.value };
+
+        isLoading.value = true;
+        error.value = null;
+
+        try {
+            const response = await useCollectionShowApi();
+
+            if (response && response.data) {
+                const data = response.data.attributes || response.data;
+                const config = useRuntimeConfig();
+                const baseUrl = config.public.strapi.url;
+                
+                heading.value = data.heading;
+                subtitle.value = data.subtitle;
+
+                if (data.items) {
+                    items.value = data.items.map((item) => {
+                        // 1. Формируем картинку
+                        let imageUrl = '';
+                        if (item.image) {
+                            const imgObj = item.image.data?.attributes || item.image;
+                            imageUrl = `${baseUrl}${imgObj.url}`;
+                        }
+
+                        // 2. Превращаем массив объектов Strapi в простой массив строк
+                        // [{text: "Шёлк"}] ---> ["Шёлк"]
+                        const cleanFeatures = item.features ? item.features.map((f) => f.text) : [];
+
+                        return {
+                            id: item.id,
+                            title: item.title,
+                            description: item.description,
+                            image: imageUrl,
+                            badge: item.badge,
+                            features: cleanFeatures // передаем очищенный массив строк
+                        };
+                    });
+                }
+            }
+
+            return { heading: heading.value, subtitle: subtitle.value, items: items.value };
+
+        } catch (e) {
+            console.error('Ошибка showcase:', e);
+            error.value = e.message;
+        } finally {
+            isLoading.value = false;
         }
-    ]);
+    };
 
-
-
-    return { heading, subtitle,  items };
+    return { heading, subtitle, items, isLoading, error, loadShowcaseData };
 });

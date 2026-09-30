@@ -1,180 +1,296 @@
+$color-text-main: #1a1a1a;
+$color-text-muted: #6b7280;
+$color-accent: #111827;
+$color-bg-light: #f9fafb;
+$color-border: #e5e7eb;
+
 .studio-showcase {
-  padding: 4rem 0;
+  padding: 5rem 0;
   background: #ffffff;
+  color: $color-text-main;
 }
 
-.showcase-content {
+
+/* --- Заголовки --- */
+.showcase-header {
   text-align: center;
+  margin-bottom: 4rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .section-heading {
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   margin-bottom: 1rem;
-  color: #111827;
+  color: $color-accent;
 
   @media (min-width: 768px) {
-    font-size: 2.5rem;
+    font-size: 2.75rem;
   }
 }
 
 .section-subtitle {
   font-size: 1.125rem;
-  color: #6b7280;
-  margin-bottom: 3rem;
+  color: $color-text-muted;
+  line-height: 1.6;
 }
 
-/* Слайдер */
-.studio-gallery {
+/* --- Слайдер Layout --- */
+.slider-wrapper {
   position: relative;
-  margin-bottom: 2rem;
-  min-height: 600px; /* Фиксирует высоту, чтобы макет не прыгал при анимации */
 }
 
-/* Vue Transition Classes */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.4s ease, transform 0.4s ease;
+// Изменили название класса
+.gallery-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  
+  @media (min-width: 992px) {
+    grid-template-columns: 1fr 1fr; // 50/50 десктоп
+    gap: 4rem;
+    /* Убрали align-items: center, чтобы колонки были одинаковой высоты */
+    align-items: stretch; 
+  }
 }
 
-.fade-enter-from {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.fade-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
+/* --- Левая часть: Изображение --- */
+.slide-visual {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: $color-bg-light;
+  
+  // Фиксируем высоту контейнера, чтобы верстка не прыгала при анимации
+  aspect-ratio: 4 / 5;
+  
+  @media (min-width: 992px) {
+    aspect-ratio: 3 / 4;
+    height: 100%;
+    min-height: 500px;
+  }
 }
 
 .gallery-image {
   width: 100%;
-  height: 400px;
+  height: 100%;
   object-fit: cover;
-  border-radius: 1rem;
-  margin-bottom: 1.5rem;
+  display: block;
+}
 
-  @media (min-width: 768px) {
-    height: 500px;
+/* --- Правая часть: Текст --- */
+.slide-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; // Прижимает контролы к низу
+  height: 100%;
+  padding-bottom: 1rem;
+}
+
+.info-content {
+  margin-bottom: 3rem;
+}
+/* --- Левая часть: Изображение --- */
+.slide-visual {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: $color-bg-light;
+  @media (max-width: 992px) {
+    height: 450px;
+  }
+
+}
+
+.gallery-image {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+  
+  @media (min-width: 992px) {
+    aspect-ratio: 3 / 4; // Более вытянутое на десктопе
+    max-height: 700px;
   }
 }
 
-.gallery-info {
-  text-align: center;
-  padding: 0 1rem;
+/* --- Правая часть: Текст --- */
+.slide-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding-bottom: 1rem;
 }
 
-.gallery-info h3 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  color: #111827;
-
-  @media (min-width: 768px) {
-    font-size: 2rem;
-  }
+.info-content {
+  margin-bottom: 3rem;
 }
 
-.gallery-info p {
-  color: #6b7280;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-}
-
-/* Бейдж */
 .studio-badge {
   display: inline-block;
-  background: #2563eb;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 2rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
+  border: 1px solid $color-border;
+  color: #fff;
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.5rem;
+  background-color: #3e73ee;
 }
 
-/* Фичи */
-.studio-features-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem;
+.slide-title {
+  font-size: 1.75rem;
+  font-weight: 500;
+  margin-bottom: 1.25rem;
+  color: $color-accent;
+  line-height: 1.2;
+
+  @media (min-width: 768px) {
+    font-size: 2.25rem;
+  }
+}
+
+.slide-description {
+  font-size: 1.05rem;
+  color: $color-text-muted;
+  line-height: 1.7;
   margin-bottom: 2rem;
 }
 
-.studio-feature {
-  background: #f1f5f9;
-  color: #475569;
-  padding: 0.5rem 1rem;
-  border-radius: 2rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-/* Кнопки действий */
-.studio-card-actions {
+.studio-features-list {
   display: flex;
-  justify-content: center;
-  gap: 1rem;
   flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
-/* Контролы слайдера */
-.gallery-controls {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.gallery-prev,
-.gallery-next {
-  padding: 0.75rem 1.5rem;
-  background: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  font-weight: 600;
+.studio-feature {
+  background: $color-bg-light;
+  color: $color-text-main;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 400;
+  border: 1px solid transparent;
+  transition: border-color 0.3s ease;
 
   &:hover {
-    background: #1d4ed8;
+    border-color: $color-border;
   }
 }
 
-/* Точки-индикаторы */
+/* --- Управление слайдером --- */
+.slider-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 2rem;
+  border-top: 1px solid $color-border;
+}
+
+/* Точки как линии */
 .gallery-dots {
   display: flex;
-  justify-content: center;
   gap: 0.5rem;
-  margin-top: 1.5rem;
 }
 
 .gallery-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #d1d5db;
+  width: 24px;
+  height: 2px;
+  background: $color-border;
   border: none;
   cursor: pointer;
-  transition: background 0.3s ease;
+  padding: 0;
+  transition: all 0.3s ease;
 
   &.active {
-    background: #2563eb;
+    background: #3e73ee;
+    width: 36px;
+  }
+
+  &:hover:not(.active) {
+    background: #9ca3af;
   }
 }
 
-/* Адаптив */
-@media (max-width: 768px) {
-  .studio-card-actions {
-    flex-direction: column;
-    align-items: center;
+/* Стрелки */
+.gallery-arrows {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.arrow-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid $color-border;
+  background: transparent;
+  color: $color-text-main;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  svg {
+    width: 20px;
+    height: 20px;
   }
-  
-  .gallery-prev,
-  .gallery-next {
-    width: 100%;
-    max-width: 200px;
+
+  &:hover {
+    background: $color-accent;
+    color: #ffffff;
+    border-color: $color-accent;
   }
 }
+
+/* --- Анимации Vue --- */
+.slider-fade-enter-active,
+.slider-fade-leave-active {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.slider-fade-enter-from {
+  opacity: 0;
+  transform: translateY(15px);
+  
+  @media (min-width: 992px) {
+    transform: translateX(20px);
+  }
+}
+
+.slider-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-15px);
+  
+  @media (min-width: 992px) {
+    transform: translateX(-20px);
+  }
+}
+
+/* Базовые стили состояний */
+.showcase-loading, .showcase-error, .showcase-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: $color-text-muted;
+  font-size: 1.125rem;
+}
+.showcase-error { color: #ef4444; }
+.loader {
+  border: 2px solid $color-border;
+  border-top-color: $color-accent;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }

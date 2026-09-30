@@ -1,0 +1,26 @@
+{
+  "kind": "singleType",
+  "collectionName": "brand_features",
+  "info": {
+    "singularName": "brand-feature",
+    "pluralName": "brand-features",
+    "displayName": "BrandFeature"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "FeatureCard": {
+      "type": "component",
+      "component": "blocks.feature",
+      "repeatable": true
+    }
+  }
+}

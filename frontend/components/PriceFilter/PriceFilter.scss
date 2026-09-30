@@ -1,4 +1,9 @@
   // 🔥 Стили для двойного ползунка
+  .price-filter
+  {
+    margin-bottom: 20px;
+  }
+
   .range-slider {
     position: relative;
     height: 6px;
@@ -91,9 +96,20 @@
     }
   }
 
+  .input-wrapper
+  {
+    display: flex;
+    gap: 7px;
+
+    input 
+    {
+      padding: 2px 5px;
+    }
+  }
+
   .price-inputs
   {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 7px;
   }

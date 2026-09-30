@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_shared_developers",
+  "info": {
+    "displayName": "developer"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

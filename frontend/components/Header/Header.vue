@@ -9,8 +9,17 @@
         </div>
 
         <div class="nav-menu" :class="{ 'nav-menu--active': isMenuOpen }">
-          <NuxtLink :to="item.path" class="nav-item" v-for="item in headerLinks">{{ item.name }}</NuxtLink>
-          
+          <!-- 1. Добавлено обращение к headerStore.headerLinks -->
+          <!-- 2. Добавлен обязательный параметр :key="item.id" -->
+          <NuxtLink 
+            v-for="item in headerStore.headerLinks" 
+            :key="item.id"
+            :to="item.path" 
+            @click="closeMenuAfterLink"
+            class="nav-item"
+          >
+            {{ item.name }}
+          </NuxtLink>
         </div>
 
         <div
@@ -28,37 +37,43 @@
 </template>
 
 <script setup>
-    import Logo from '~/assets/svg/Logo.vue';
-    import { useHeaderStore } from '~/stores/headerStore';
-    import { watch } from 'vue';
-    
+import Logo from '~/assets/svg/Logo.vue';
+import { useHeaderStore } from '~/stores/headerStore';
+// ref и watch можно не импортировать руками, Nuxt делает это автоматически (Auto-imports)
+// но если импортировали — ничего страшного, это не ошибка
+
+const headerStore = useHeaderStore()
+
+// Вызываем загрузку данных перед рендерингом (SSR)
+await useAsyncData('header-links-data', async () => {
+  await headerStore.loadHeaderLinks()
+  return true 
+})
+
+console.log(headerStore.headerLinks)
+
+// Логика бургер-меню
+const isMenuOpen = ref(false)
+
+const toggleMenu = () => {
+  isMenuOpen.value = !isMenuOpen.value
+}
+const closeMenuAfterLink = () =>
+{
+  isMenuOpen.value = false
+}
 
 
-    const headerStore = useHeaderStore()
-    const {headerLinks} = headerStore
-    
-
-    const isMenuOpen = ref(false)
-
-    const toggleMenu = () => {
-
-    isMenuOpen.value = !isMenuOpen.value
-
-    }
-
-
-    watch(isMenuOpen, (isOpen) =>
-    {
-      if(isOpen)
-    {
-      document.body.style.overflow = 'hidden';
-    } else 
-    {
-      document.body.style.overflow = '';
-    }
-    })
+// Блокировка скролла при открытом меню
+watch(isMenuOpen, (isOpen) => {
+  if (isOpen) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
+})
 </script>
 
 <style lang="scss" scoped>
-    @use "./Header.scss" as *;
+@use "./Header.scss" as *;
 </style>

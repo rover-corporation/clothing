@@ -1,5 +1,6 @@
 <template>
-  <section class="faq-section" id="faq">
+  <!-- 1. v-if="heading" защищает от рендера пустой секции -->
+  <section v-if="heading" class="faq-section" id="faq">
     <div class="container">
       <div class="faq-content">
         <div class="faq-text">
@@ -7,36 +8,50 @@
           <p class="faq-intro">{{ intro }}</p>
 
           <div class="faq-items">
+            <!-- 2. Используем item.id в качестве ключа -->
             <div 
-              v-for="(item, index) in faqItems" 
-              :key="index" 
+              v-for="item in faqItems" 
+              :key="item.id" 
               class="faq-item"
             >
+              <!-- 3. Сверяем с ID, а не с индексом -->
+              <!-- 3. Сверяем с ID, а не с индексом -->
               <button 
                 class="faq-question" 
-                :class="{ active: openIndex === index }"
-                @click="toggleQuestion(index)"
+                :class="{ active: openId === item.id }"
+                @click="toggleQuestion(item.id)"
               >
-                {{ item.question }}
+                <span>{{ item.question }}</span>
+                
+                <!-- 🔥 НОВОЕ: Иконка плюса -->
+                <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
               </button>
               
               <!-- Анимация теперь через CSS-класс .open -->
               <div 
                 class="faq-answer" 
-                :class="{ open: openIndex === index }"
+                :class="{ open: openId === item.id }"
               >
                 <p>{{ item.answer }}</p>
               </div>
             </div>
           </div>
 
-          <CtaButton to="#materials" variant="primary">
-            Узнать больше о материалах
-          </CtaButton>
+          <NuxtLink to="/#materials">
+            <CtaButton  variant="primary">
+              Узнать больше о материалах
+            </CtaButton>
+          </NuxtLink>
+
+          
         </div>
 
         <div class="faq-visual">
+          <!-- На всякий случай проверяем, есть ли картинка -->
           <img 
+            v-if="image"
             :src="image" 
             alt="Детали пошива одежды" 
             class="faq-image" 
@@ -56,11 +71,25 @@ import { useFaqStore } from '~/stores/faqStore'
 const store = useFaqStore()
 const { heading, intro, image, faqItems } = storeToRefs(store)
 
-// Состояние аккордеона
-const openIndex = ref(null)
+// Загрузка и синхронизация SSR
+const { data } = await useAsyncData('faq-data', async () => {
+  return await store.loadFaqData()
+})
 
-const toggleQuestion = (index) => {
-  openIndex.value = openIndex.value === index ? null : index
+if (data.value && !store.heading) {
+  store.heading = data.value.heading;
+  store.intro = data.value.intro;
+  store.faqItems = data.value.faqItems;
+  store.image = data.value.image;
+
+  
+}
+
+// 4. Состояние аккордеона (переделано на работу с ID)
+const openId = ref(null)
+
+const toggleQuestion = (id) => {
+  openId.value = openId.value === id ? null : id
 }
 </script>
 

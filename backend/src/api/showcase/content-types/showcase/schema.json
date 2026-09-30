@@ -1,0 +1,26 @@
+{
+  "kind": "singleType",
+  "collectionName": "showcases",
+  "info": {
+    "singularName": "showcase",
+    "pluralName": "showcases",
+    "displayName": "Showcase"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "items": {
+      "type": "component",
+      "component": "shared.showcase-item",
+      "repeatable": true
+    }
+  }
+}

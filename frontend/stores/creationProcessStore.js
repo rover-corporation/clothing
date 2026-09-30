@@ -1,28 +1,54 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+// Импортируйте вашу функцию запроса
+import { useCreationProcessApi } from "~/api/creationProcess"; 
 
 export const useCreationProcessStore = defineStore('creationProcessStore', () => {
-    const heading = ref("Как рождается коллекция");
-    const subtitle = ref("От идеи до готового образа: наш подход к созданию одежды");
-    
-    const steps = ref([
-        {
-            title: "Идея и эскиз",
-            description: "Начинаем с вдохновения и ручной отрисовки лекал. Каждая линия продумана до миллиметра."
-        },
-        {
-            title: "Подбор тканей",
-            description: "Работаем только с проверенными поставщиками. Натуральный шёлк, лён и хлопок премиум-класса."
-        },
-        {
-            title: "Ручной пошив",
-            description: "Мастера вручную обрабатывают каждый шов. Строгий контроль качества на каждом этапе."
-        },
-        {
-            title: "Финальный образ",
-            description: "Готовые вещи проходят примерку, утюжку и попадают в лукбук. Одежда, созданная для жизни."
-        }
-    ]);
+    const heading = ref("");
+    const subtitle = ref("");
+    const steps = ref([]);
 
-    return { heading, subtitle, steps };
+    const isLoading = ref(false);
+    const error = ref(null);
+
+    const loadProcessData = async () => {
+        // Защита от повторных запросов (для SSR)
+        if (heading.value) {
+            return { heading: heading.value, subtitle: subtitle.value, steps: steps.value };
+        }
+
+        isLoading.value = true;
+        error.value = null;
+
+        try {
+            const response = await useCreationProcessApi();
+
+            if (response && response.data) {
+                // Хак для поддержки Strapi v4/v5
+                const data = response.data.attributes || response.data;
+                
+                heading.value = data.heading;
+                subtitle.value = data.subtitle;
+
+                if (data.steps) {
+                    // Мапим шаги, оставляя только нужные поля
+                    steps.value = data.steps.map((step) => ({
+                        id: step.id,
+                        title: step.title,
+                        description: step.description
+                    }));
+                }
+            }
+
+            return { heading: heading.value, subtitle: subtitle.value, steps: steps.value };
+
+        } catch (e) {
+            console.error('Ошибка CreationProcess:', e);
+            error.value = e.message || 'Ошибка загрузки';
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
+    return { heading, subtitle, steps, isLoading, error, loadProcessData };
 });

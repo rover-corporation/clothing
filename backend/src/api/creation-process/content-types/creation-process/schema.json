@@ -1,0 +1,26 @@
+{
+  "kind": "singleType",
+  "collectionName": "creation_processes",
+  "info": {
+    "singularName": "creation-process",
+    "pluralName": "creation-processes",
+    "displayName": "CreationProcess"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "steps": {
+      "type": "component",
+      "component": "shared.step",
+      "repeatable": true
+    }
+  }
+}

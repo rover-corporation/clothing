@@ -1,24 +1,33 @@
 <template>
-  <section class="hero-banner" id="about">
+  <!-- v-if предотвращает рендер пустой секции, если данные еще не прилетели -->
+
+   
+
+  <section v-if="heroData.title" class="hero-banner" id="about">
     <div class="container">
       <div class="hero-content">
         <h1 class="hero-title">{{ heroData.title }}</h1>
         <p class="hero-text">{{ heroData.text }}</p>
         
         <div class="hero-actions">
-        <CtaButton
-        v-for="(btn, index) in heroData.buttons"
-        :key="index"
-        :variant="btn.variant"
-        @click="() => console.log('Клик по:', btn.label)"
-        >
-        {{ btn.label }}
-        </CtaButton>
+          <NuxtLink v-for="(btn, index) in heroData.buttons" :key="index" :to="btn.to">
+            <CtaButton
+              
+              
+              :variant="btn.variant"
+              @click="() => console.log('Клик по:', btn.label)"
+            >
+              {{ btn.label }}
+            </CtaButton>
+          </NuxtLink>
+          
         </div>
       </div>
 
       <div class="hero-visual">
+        <!-- Убедитесь, что image содержит данные перед рендером img -->
         <img 
+          v-if="heroData.image"
           :src="heroData.image" 
           alt="Hero Banner" 
           class="hero-image" 
@@ -31,11 +40,20 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { useHeroStore } from '~/stores/mainBannerHero'
+// Укажите правильный путь к вашему стору
+import { useHeroStore } from '@/stores/mainBannerHero' 
 
 const heroStore = useHeroStore()
-// ✅ Обязательно storeToRefs, чтобы данные оставались реактивными
+// storeToRefs позволяет использовать heroData напрямую в <template>
 const { heroData } = storeToRefs(heroStore)
+
+// Обязательный вызов для Nuxt 3 (SSR-загрузка данных перед отрисовкой HTML)
+await useAsyncData('hero-banner-data', async () => {
+  await heroStore.loadHeroData();
+  return true;
+});
+
+console.log(heroData.value)
 </script>
 
 <style lang="scss" scoped>

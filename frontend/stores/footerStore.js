@@ -1,29 +1,93 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+// Импортируйте вашу функцию запроса
+import { useFooterApi } from "~/api/footer";
 
 export const useFooterStore = defineStore('footerStore', () => {
-    const navLinks = ref([
-        { path: '/', label: 'Главная' },
-        { path: '/#about', label: 'О бренде' },
-        { path: '/#collections', label: 'Коллекции' },
-        { path: '/#materials', label: 'Материалы' },
-        { path: '/#process', label: 'Процесс' },
-        { path: '/#faq', label: 'Вопросы' }
-    ]);
+    const navLinks = ref([]);
+    const contactLinks = ref([]);
+    const legalLinks = ref([]);
+    
+    const brandDescription = ref("");
+    const copyright = ref("");
+    
+    const developer = ref({ name: "", url: "" });
 
-    // 🔥 Обновленные ссылки на юридические страницы
-    const legalLinks = ref([
-        { path: '/privacy', label: 'Политика конфиденциальности' },
-        { path: '/personal', label: 'Политика обработки персональных данных' }
-    ]);
+    const isLoading = ref(false);
+    const error = ref(null);
 
-    const brandDescription = ref("Одежда, созданная с вниманием к деталям. Натуральные ткани, безупречный крой и философия осознанного стиля.");
-    const copyright = ref("Все права защищены.");
+    const loadFooterData = async () => {
+        // Защита от повторных запросов (если copyright уже загружен)
+        if (copyright.value) {
+            return {
+                navLinks: navLinks.value,
+                contactLinks: contactLinks.value,
+                legalLinks: legalLinks.value,
+                brandDescription: brandDescription.value,
+                copyright: copyright.value,
+                developer: developer.value
+            };
+        }
 
-    const developer = ref({
-        name: "RoVer Digital",
-        url: "https://vk.ru/rover.vladikavkaz"
-    });
+        isLoading.value = true;
+        error.value = null;
 
-    return { navLinks, legalLinks, brandDescription, copyright, developer };
+        try {
+            const response = await useFooterApi();
+
+            if (response && response.data) {
+                const data = response.data.attributes || response.data;
+                
+                brandDescription.value = data.brandDescription;
+                copyright.value = data.copyright;
+
+                // Универсальная функция для маппинга ссылок (чтобы не писать 3 раза одно и то же)
+                const mapLinks = (linksArray) => {
+                    return linksArray ? linksArray.map((link) => ({
+                        id: link.id,
+                        label: link.label,
+                        path: link.path
+                    })) : [];
+                };
+
+                navLinks.value = mapLinks(data.navLinks);
+                contactLinks.value = mapLinks(data.contactLinks);
+                legalLinks.value = mapLinks(data.legalLinks);
+
+                if (data.developer) {
+                    developer.value = {
+                        name: data.developer.name,
+                        url: data.developer.url
+                    };
+                }
+            }
+
+            return {
+                navLinks: navLinks.value,
+                contactLinks: contactLinks.value,
+                legalLinks: legalLinks.value,
+                brandDescription: brandDescription.value,
+                copyright: copyright.value,
+                developer: developer.value
+            };
+
+        } catch (e) {
+            console.error('Ошибка Footer:', e);
+            error.value = e.message || 'Ошибка загрузки подвала';
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
+    return { 
+        navLinks, 
+        contactLinks, 
+        legalLinks, 
+        brandDescription, 
+        copyright, 
+        developer, 
+        isLoading, 
+        error, 
+        loadFooterData 
+    };
 });

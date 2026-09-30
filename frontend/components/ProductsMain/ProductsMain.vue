@@ -9,45 +9,83 @@
 
             <div class="products-catalog">
 
-                <div class="products-filters">
+                <!-- 🔥 НОВОЕ: Кнопка вызова фильтров (только для мобилок) -->
+                <div class="mobile-filter-trigger">
+                    <button class="btn-open-filters" @click="openFilters">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 21v-7m0-4V3m8 18v-9m0-4V3m8 18v-5m0-4V3M1 14h6m2-6h6m2 8h6"/></svg>
+                        Фильтры 
+                        <span v-if="activeFiltersCount > 0" class="filter-badge">
+                            {{ activeFiltersCount }}
+                        </span>
+                    </button>
+                </div>
 
-                    <CtaButton @click="resetFiltets">
-                        Сбросить фильтры
-                    </CtaButton>
+                <!-- 🔥 НОВОЕ: Затемнение фона при открытых фильтрах на мобилке -->
+                <div 
+                    class="filters-overlay" 
+                    :class="{ 'is-active': isMobileFiltersOpen }"
+                    @click="closeFilters"
+                ></div>
 
-
-                                      
-                    <!-- Фильтр по цене -->
-                    <PriceFilter v-model="selectedPrice" />
-                    <!-- Фильтры, которые мы сделали ранее -->
-                    <ColorFilter v-model="selectedColors" />
-                    <SizeFilter v-model="selectedSizes" />
-                    <MaterialFilter v-model="selectedMaterials" />
+                <!-- Блок фильтров (На ПК - сайдбар, на мобилке - шторка) -->
+                <div class="products-filters" :class="{ 'is-open': isMobileFiltersOpen }">
                     
-                    <!-- Обновленный блок для отладки -->
-                    <div style="margin-top: 20px; padding: 10px; background: #f3f4f6; border-radius: 8px;">
-                       <p style="font-size: 12px; color: gray; margin-bottom: 5px;"><strong>Собранные фильтры:</strong></p>
-                       <p style="font-size: 12px; margin: 0;">Цена: {{ selectedPrice }}</p>
-                       <p style="font-size: 12px; margin: 0;">Цвета: {{ selectedColors }}</p>
-                       <p style="font-size: 12px; margin: 0;">Размеры: {{ selectedSizes }}</p>
-                       <p style="font-size: 12px; margin: 0;">Материалы: {{ selectedMaterials }}</p>
+                    <!-- Шапка фильтров (только мобилка) -->
+                    <div class="filters-mobile-header">
+                        <h3>Фильтры</h3>
+                        <button class="btn-close" @click="closeFilters" aria-label="Закрыть">&times;</button>
+                    </div>
+
+                    <div class="filters-scroll-area">
+                        <CtaButton @click="resetFilters" class="reset-btn">
+                            Сбросить фильтры
+                        </CtaButton>
+                                          
+                        <PriceFilter v-model="selectedPrice" />
+                        <ColorFilter v-model="selectedColors" />
+                        <SizeFilter v-model="selectedSizes" />
+                        <MaterialFilter v-model="selectedMaterials" />
+                    </div>
+
+                    <!-- Подвал фильтров (только мобилка) -->
+                    <div class="filters-mobile-footer">
+                        <button class="btn-apply" @click="closeFilters">
+                            Показать ({{ filteredProducts.length }})
+                        </button>
                     </div>
                 </div>
 
-                <div class="product-list">
-                    <!-- Если товары есть, выводим их -->
-                    <template v-if="filteredProducts.length > 0">
-                        <div v-for="item in filteredProducts" :key="item.id">
-                            <NuxtLink :to="`/catalog/${item.id}`">
-                                <ProductCard :prod-obj="item"/>
-                            </NuxtLink>
+                <!-- Список товаров и пагинация (Без изменений) -->
+                <div class="product-list-wrapper">
+                    <div class="product-list">
+                        <template v-if="paginatedProducts.length > 0">
+                            <div v-for="item in paginatedProducts" :key="item.id">
+                                <NuxtLink :to="`/catalog/${item.documentId || item.id}`">
+                                    <ProductCard :prod-obj="item"/>
+                                </NuxtLink>
+                            </div>
+                        </template>
+                        <div v-else class="empty-state">
+                            <h3>Товары не найдены</h3>
+                            <p>Попробуйте изменить условия фильтрации.</p>
                         </div>
-                    </template>
-                    
-                    <!-- Если после фильтрации массив пустой, показываем сообщение -->
-                    <div v-else class="empty-state">
-                        <h3>Товары не найдены</h3>
-                        <p>Попробуйте изменить условия фильтрации.</p>
+                    </div>
+
+                    <!-- Пагинация -->
+                    <div v-if="totalPages > 1" class="pagination">
+                        <button class="page-btn" :disabled="currentPage === 1" @click="prevPage">&larr; Назад</button>
+                        <div class="page-numbers">
+                            <button 
+                                v-for="page in totalPages" 
+                                :key="page"
+                                class="page-btn"
+                                :class="{ active: currentPage === page }"
+                                @click="setPage(page)"
+                            >
+                                {{ page }}
+                            </button>
+                        </div>
+                        <button class="page-btn" :disabled="currentPage === totalPages" @click="nextPage">Вперед &rarr;</button>
                     </div>
                 </div>
 
@@ -58,7 +96,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue' // Добавили computed
+import { ref, computed, watch } from 'vue' // Добавили watch
+import { storeToRefs } from 'pinia'
+import { useProductStore } from '~/stores/products/productsStore'
+
 import CtaButton from '@/components/CtaButton/CtaButton.vue'
 import ProductCard from '@/components/ProductCard/ProductCard.vue'
 import PriceFilter from '@/components/PriceFilter/PriceFilter.vue'
@@ -66,49 +107,53 @@ import ColorFilter from '@/components/ColorFilter/ColorFilter.vue'
 import SizeFilter from '@/components/SizeFilter/SizeFilter.vue'
 import MaterialFilter from '@/components/MaterialFilter/MaterialFilter.vue'
 
-import dress from '@/assets/images/banner.webp'
+import { onBeforeUnmount } from 'vue' // <-- добавьте в начало импортов
 
-// Реактивные переменные фильтров
+// === МАГИЯ МОБИЛЬНЫХ ФИЛЬТРОВ ===
+const isMobileFiltersOpen = ref(false)
+
+const openFilters = () => {
+    isMobileFiltersOpen.value = true
+    document.body.style.overflow = 'hidden' // Блокируем скролл сайта
+}
+
+const closeFilters = () => {
+    isMobileFiltersOpen.value = false
+    document.body.style.overflow = '' // Возвращаем скролл
+}
+
+// Защита: если ушли со страницы с открытыми фильтрами, разблокируем скролл
+onBeforeUnmount(() => {
+    document.body.style.overflow = ''
+})
+
+// Подсчет количества выбранных фильтров для бейджика
+const activeFiltersCount = computed(() => {
+    let count = 0
+    if (selectedPrice.value.min || selectedPrice.value.max) count++
+    count += selectedColors.value.length
+    count += selectedSizes.value.length
+    count += selectedMaterials.value.length
+    return count
+})
+
+const productStore = useProductStore()
+const { products } = storeToRefs(productStore)
+
+const { data } = await useAsyncData('catalog-products', async () => {
+  return await productStore.loadProducts()
+})
+
+if (data.value && productStore.products.length === 0) {
+    productStore.products = data.value.products
+}
+
 const selectedPrice = ref({ min: null, max: null })
 const selectedColors = ref([])
 const selectedSizes = ref([])
 const selectedMaterials = ref([])
 
-// Моковые данные (цены изменены для проверки фильтра)
-const productMockup = reactive([
-    {
-        id: 1,
-        img: dress,
-        material: ['denim'],
-        size: ['xs', 's'],
-        color: 'red',
-        name: 'Платье',
-        shortDesc: 'Элегентное платье на вечер',
-        price: 3000, 
-    },
-    {
-        id: 2,
-        img: dress,
-        material: ['wool'],
-        size: ['m', 'l', 'xl'],
-        color: 'black',
-        name: 'Брюки',
-        shortDesc: 'Элегентное платье на вечер',
-        price: 6000,
-    },
-    {
-        id: 3,
-        img: dress,
-        material: ['cotton'],
-        size: ['l', 'xl'],
-        color: 'blue',
-        name: 'Юбка',
-        shortDesc: 'Элегентное платье на вечер',
-        price: 9000,
-    },
-])
-
-const resetFiltets = () => {
+const resetFilters = () => {
     selectedPrice.value = { min: null, max: null }
     selectedColors.value = []
     selectedSizes.value = []
@@ -117,8 +162,7 @@ const resetFiltets = () => {
 
 // === МАГИЯ ФИЛЬТРАЦИИ ===
 const filteredProducts = computed(() => {
-    return productMockup.filter(product => {
-        // 1. Проверка цены
+    return products.value.filter(product => {
         if (selectedPrice.value.min !== null && selectedPrice.value.min !== '') {
             if (product.price < selectedPrice.value.min) return false
         }
@@ -126,33 +170,63 @@ const filteredProducts = computed(() => {
             if (product.price > selectedPrice.value.max) return false
         }
 
-        // 2. Проверка цвета (у товара цвет - строка)
         if (selectedColors.value.length > 0) {
-            // Если выбранных цветов нет в цвете товара - скрываем
             if (!selectedColors.value.includes(product.color)) return false
         }
 
-        // 3. Проверка размера (у товара размер - массив)
         if (selectedSizes.value.length > 0) {
-            // Метод some проверяет: есть ли хотя бы один выбранный размер в массиве размеров товара
             const hasSize = selectedSizes.value.some(s => product.size.includes(s))
             if (!hasSize) return false
         }
 
-        // 4. Проверка материала (у товара материал - массив)
         if (selectedMaterials.value.length > 0) {
             const hasMaterial = selectedMaterials.value.some(m => product.material.includes(m))
             if (!hasMaterial) return false
         }
 
-        // Если товар прошел все проверки выше, оставляем его
         return true
     })
 })
+
+// 🔥 === МАГИЯ ПАГИНАЦИИ ===
+
+const currentPage = ref(1)
+const itemsPerPage = 9 // Количество товаров на странице
+
+// Считаем общее количество страниц (округляем вверх)
+const totalPages = computed(() => {
+    return Math.ceil(filteredProducts.value.length / itemsPerPage)
+})
+
+// Вырезаем только те товары, которые нужны для текущей страницы
+const paginatedProducts = computed(() => {
+    const start = (currentPage.value - 1) * itemsPerPage
+    const end = start + itemsPerPage
+    return filteredProducts.value.slice(start, end)
+})
+
+// Функции переключения страниц
+const nextPage = () => {
+    if (currentPage.value < totalPages.value) currentPage.value++
+}
+const prevPage = () => {
+    if (currentPage.value > 1) currentPage.value--
+}
+const setPage = (page) => {
+    currentPage.value = page
+}
+
+// 🚨 ВАЖНО: Если пользователь меняет любой фильтр, сбрасываем страницу на первую!
+watch([selectedPrice, selectedColors, selectedSizes, selectedMaterials], () => {
+    currentPage.value = 1
+}, { deep: true }) // deep нужен для объектов (selectedPrice)
+
+console.log(paginatedProducts.value)
+
 </script>
 
 <style lang="scss" scoped>
-
 @use './ProductsMain.scss' as *;
+
 
 </style>

@@ -1,0 +1,39 @@
+{
+  "collectionName": "components_shared_showcase_items",
+  "info": {
+    "displayName": "ShowcaseItem"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "badge": {
+      "type": "enumeration",
+      "enum": [
+        "NEW",
+        "HIT",
+        "SALE"
+      ]
+    },
+    "features": {
+      "type": "component",
+      "component": "shared.feat-tag",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

@@ -1,0 +1,36 @@
+{
+  "kind": "singleType",
+  "collectionName": "quality_details",
+  "info": {
+    "singularName": "quality-detail",
+    "pluralName": "quality-details",
+    "displayName": "qualityDetail"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "features": {
+      "type": "component",
+      "component": "shared.feat-tag",
+      "repeatable": true
+    }
+  }
+}

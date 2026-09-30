@@ -52,13 +52,32 @@
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
 
+  // 🔥 НОВОЕ: Раскидываем текст и иконку по краям
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem; // Отступ, если текст слишком длинный
+
   &:hover {
     background: #f9fafb;
   }
 
   &.active {
     background: #f1f5f9;
-    color: #2563eb;
+    color: #2563eb; // Можно поменять на #111827 (черный), если хотите более строгий стиль
+
+    // 🔥 НОВОЕ: При активном классе вращаем иконку на 45 градусов (Плюс превращается в Крестик)
+    .faq-icon {
+      transform: rotate(45deg);
+    }
+  }
+
+  // 🔥 НОВОЕ: Базовые стили для иконки
+  .faq-icon {
+    flex-shrink: 0; // Запрещаем иконке сжиматься, если вопрос занимает 2 строки
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease; // Плавная анимация поворота
   }
 }
 
@@ -71,7 +90,7 @@
   
   p {
     margin: 0;
-    padding: 0 1.5rem 1.5rem;
+    padding: 1.5rem;
     color: #4b5563;
     line-height: 1.6;
   }

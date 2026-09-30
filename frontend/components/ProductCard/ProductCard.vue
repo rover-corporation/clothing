@@ -18,9 +18,9 @@
         
         <div class="prod-action">
           <!-- Стили кнопки теперь полностью контролируются внутри CtaButton.vue -->
-          <CtaButton>
+          <!-- <CtaButton>
             Связаться
-          </CtaButton>
+          </CtaButton> -->
         </div>
       </div>
     </div>

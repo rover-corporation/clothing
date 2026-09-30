@@ -7,6 +7,8 @@
     <QualityDetails />
     <CreationProcess />
     <FaqSection />
+
+    
   </div>
 </template>
 

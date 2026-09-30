@@ -1,22 +1,35 @@
 <template>
-  <footer class="main-footer">
+  <!-- Добавлен v-if, чтобы скрыть пустой футер до загрузки данных -->
+  <footer v-if="brandDescription" class="main-footer">
     <div class="container">
       <div class="footer-content">
         <!-- Бренд -->
         <div class="footer-brand">
-          <NuxtLink to="#home" class="footer-logo" aria-label="На главную">
-            <Logo />
+          <NuxtLink to="/" class="footer-logo" aria-label="На главную">
+            <Logo is-white="true" />
           </NuxtLink>
           <p class="footer-description">{{ brandDescription }}</p>
+
+          <div class="footer-contacts">
+            <!-- 🚨 ДОБАВЛЕН обязательный параметр :key="item.id" -->
+            <div 
+              class="footer-contactItem" 
+              v-for="item in contactLinks" 
+              :key="item.id"
+            >
+              <a :href="item.path">{{ item.label }}</a>
+            </div>
+          </div>
         </div>
 
         <!-- Ссылки -->
         <div class="footer-links">
           <div class="link-group">
             <h4 class="link-group-title">Навигация</h4>
+            <!-- 🚨 Использован link.id вместо index -->
             <NuxtLink 
-              v-for="(link, index) in navLinks" 
-              :key="index"
+              v-for="link in navLinks" 
+              :key="link.id"
               :to="link.path" 
               class="footer-link"
             >
@@ -25,9 +38,10 @@
           </div>
           <div class="link-group">
             <h4 class="link-group-title">Документы</h4>
+            <!-- 🚨 Использован link.id вместо index -->
             <NuxtLink 
-              v-for="(link, index) in legalLinks" 
-              :key="index"
+              v-for="link in legalLinks" 
+              :key="link.id"
               :to="link.path" 
               class="footer-link"
             >
@@ -42,7 +56,7 @@
         <div class="footer-bottom-inner">
           <p class="copyright">&copy; {{ currentYear }} Brand Clothing. {{ copyright }}</p>
           
-          <!-- 🔥 Ссылка из стора -->
+          <!-- Данные о разработчике -->
           <a 
             :href="developer.url" 
             target="_blank" 
@@ -65,8 +79,23 @@ import Logo from '~/assets/svg/Logo.vue';
 const currentYear = new Date().getFullYear()
 
 const store = useFooterStore()
-// 🔥 Достаем developer из стора
-const { navLinks, legalLinks, brandDescription, copyright, developer } = storeToRefs(store)
+const { navLinks, legalLinks, brandDescription, copyright, developer, contactLinks } = storeToRefs(store)
+
+// 🚨 ДОБАВЛЕНО: Загрузка данных для SSR
+const { data } = await useAsyncData('footer-data', async () => {
+  return await store.loadFooterData()
+})
+
+// 🚨 ДОБАВЛЕНО: Гидратация клиента (чтобы футер не пропадал при переходе по страницам)
+if (data.value && !store.brandDescription) {
+  store.brandDescription = data.value.brandDescription;
+  store.copyright = data.value.copyright;
+  store.developer = data.value.developer;
+  
+  store.navLinks = data.value.navLinks;
+  store.contactLinks = data.value.contactLinks;
+  store.legalLinks = data.value.legalLinks;
+}
 </script>
 
 <style lang="scss" scoped>

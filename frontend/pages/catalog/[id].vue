@@ -7,58 +7,45 @@
       &larr; Вернуться в каталог
     </NuxtLink>
 
-    <!-- Состояние загрузки -->
-    <div v-if="pending" class="loading-state">
+    <!-- Состояние загрузки. Используем pending из useAsyncData -->
+    <div v-if="pending || store.isLoading" class="loading-state">
       <p>Загрузка данных о товаре...</p>
     </div>
 
-    <!-- Состояние ошибки (если товар не найден) -->
-    <div v-else-if="error || !product" class="error-state">
+    <!-- Состояние ошибки (если товар не найден или ID неверный) -->
+    <div v-else-if="store.error || !store.product" class="error-state">
       <h2>Товар не найден</h2>
-      <p>К сожалению, такого товара не существует.</p>
+      <p>К сожалению, такого товара не существует или он был удален.</p>
     </div>
 
-    <!-- Если всё ок, рендерим наш компонент, передавая в него объект product -->
-    <ProductDetails v-else :product="product" />
+    <!-- Если всё ок, рендерим наш компонент -->
+    <!-- 🚨 Передаем store.product -->
+    <ProductDetails v-else :product="store.product" />
 
   </div>
 </template>
 
 <script setup>
 import { useRoute } from 'vue-router'
-// В Nuxt 3 компоненты импортируются автоматически, но можно импортировать и явно:
+import { useSingleProductStore } from '~/stores/products/singleProductStore'
 import ProductDetails from '@/components/ProductDetails/ProductDetails.vue'
 
-// Получаем объект маршрута
-const route = useRoute()
+definePageMeta({ layout: 'lay' })
 
-// Достаем ID из URL (например, из /catalog/123 достанет '123')
+const route = useRoute()
 const productId = route.params.id
 
-/*
-  Делаем "запрос" за данными с помощью useAsyncData.
-  В реальном проекте вместо setTimeout здесь будет:
-  const { data: product, pending, error } = await useFetch(`https://твое-апи.com/products/${productId}`)
-*/
-const { data: product, pending, error } = await useAsyncData(`product-${productId}`, async () => {
-  
-  // Искусственная задержка в полсекунды (имитация работы сети)
-  await new Promise(resolve => setTimeout(resolve, 500))
+const store = useSingleProductStore()
 
-  // Имитация ответа от сервера с данными конкретного товара
-  return {
-    id: productId,
-    title: `Базовая футболка оверсайз`,
-    price: 1990,
-    description: 'Идеальная базовая футболка из 100% органического хлопка. Свободный крой не сковывает движения, а плотная ткань отлично держит форму после стирок. Подойдет как для повседневной носки, так и для спорта.',
-    image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=500&q=80'
-  }
+// 🚨 Делаем SSR запрос. Ключ должен содержать ID, чтобы Nuxt кешировал товары раздельно!
+const { data, pending } = await useAsyncData(`product-data-${productId}`, async () => {
+  return await store.loadProduct(productId)
 })
 
-
-definePageMeta({
-layout: 'lay'
-})
+// Гидратация: Если сервер отдал данные, а клиентский стор пуст — кладем их туда
+if (data.value && data.value.product) {
+    store.product = data.value.product
+}
 </script>
 
 <style lang="scss" scoped>
@@ -81,8 +68,7 @@ layout: 'lay'
   font-size: 18px;
   color: #6b7280;
 }
-.product-page
-{
+.product-page {
   padding: 40px 1rem;
 }
 </style>

@@ -96,6 +96,52 @@
   }
 }
 
+.product-list-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* Стили для пагинации (можете настроить под свой дизайн) */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+
+    .page-numbers {
+        display: flex;
+        gap: 5px;
+    }
+
+    .page-btn {
+        padding: 8px 16px;
+        border: 1px solid #ddd;
+        background: white;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: all 0.2s;
+
+        &:hover:not(:disabled) {
+            background: #f3f4f6;
+        }
+
+        &.active {
+            background: #2563eb; /* Темный цвет бренда */
+            color: white;
+            
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -127,6 +173,190 @@
     :deep(.filter-title) {
       font-size: 0.75rem;
       margin-bottom: 0.75rem;
+    }
+  }
+}
+
+.mobile-filter-trigger, 
+.filters-overlay,
+.filters-mobile-header,
+.filters-mobile-footer {
+  display: none;
+}
+
+.products-catalog {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* Стили сайдбара (ПК) */
+.products-filters {
+  position: sticky;
+  top: 100px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+
+  .reset-btn { margin-bottom: 20px; }
+}
+
+/* =========================================
+   МОБИЛЬНАЯ ВЕРСИЯ (Меньше 900px)
+   ========================================= */
+@media (max-width: 900px) {
+  .products-catalog {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  /* Кнопка вызова фильтров */
+  .mobile-filter-trigger {
+    display: block;
+    margin-bottom: 10px;
+
+    .btn-open-filters {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      color: #111827;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: background 0.2s;
+
+      &:active { background: #f9fafb; }
+      svg { width: 20px; height: 20px; }
+    }
+
+    .filter-badge {
+      background: #111827;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+  }
+
+  /* Темный фон за шторкой */
+  .filters-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(2px);
+    z-index: 99;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+
+    &.is-active {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  /* Превращаем блок фильтров в выезжающую шторку (Off-canvas) */
+  .products-filters {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 85vw; /* Занимает 85% экрана */
+    max-width: 350px;
+    height: 100vh;
+    height: 100dvh;
+    background: #ffffff;
+    border-radius: 0;
+    border: none;
+    padding: 0;
+    z-index: 100;
+    box-shadow: 4px 0 25px rgba(0,0,0,0.15);
+    
+    /* Анимация выезда слева */
+    transform: translateX(-100%);
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    
+    &.is-open {
+      transform: translateX(0);
+    }
+  }
+
+  /* Шапка мобильных фильтров */
+  .filters-mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #f3f4f6;
+
+    h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .btn-close {
+      background: none;
+      border: none;
+      font-size: 32px;
+      line-height: 1;
+      color: #6b7280;
+      padding: 0;
+      cursor: pointer;
+    }
+  }
+
+  /* Зона скролла внутри шторки */
+  .filters-scroll-area {
+    padding: 20px;
+    height: calc(100vh - 150px);
+    overflow-y: auto;
+    
+    /* Прячем скроллбар */
+    &::-webkit-scrollbar { display: none; }
+    scrollbar-width: none;
+  }
+
+  /* Кнопка "Применить" внизу шторки */
+  .filters-mobile-footer {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    background: #ffffff;
+    border-top: 1px solid #f3f4f6;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.03);
+
+    .btn-apply {
+      width: 100%;
+      padding: 16px;
+      background: #111827;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
     }
   }
 }

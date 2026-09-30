@@ -16,9 +16,12 @@
             </li>
           </ul>
 
-          <CtaButton to="#materials" variant="primary">
-            Подробнее о материалах
-          </CtaButton>
+          <NuxtLink to="/#process">
+            <CtaButton variant="primary">
+              Подробнее о процессе
+            </CtaButton>
+          </NuxtLink >
+          
         </div>
 
         <div class="quality-visual">
@@ -36,10 +39,23 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { useQualityDetailsStore } from '~/stores/qualityDetailsStore'
+import { useQualityDetailsStore } from '~/stores/qualityDetailsStore' // ваш путь
 
 const store = useQualityDetailsStore()
 const { heading, description, features, image } = storeToRefs(store)
+
+// Загрузка и синхронизация SSR
+const { data } = await useAsyncData('quality-details-data', async () => {
+  return await store.loadQualityDetails()
+})
+
+if (data.value && !store.heading) {
+  store.heading = data.value.heading;
+  store.description = data.value.description;
+  store.features = data.value.features;
+  console.log(data.value.features)
+  store.image = data.value.image;
+}
 </script>
 
 <style lang="scss" scoped>

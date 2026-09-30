@@ -1,34 +1,73 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-
-// 🖼️ Импорт картинки (положи файл в assets/images/ под этим именем)
-import faqImage from '@/assets/images/faq-craft.webp'
+// Укажите ваш путь к функции запроса
+import { useFaqApi } from "~/api/faq";
 
 export const useFaqStore = defineStore('faqStore', () => {
-    const heading = ref("Часто задаваемые вопросы");
-    const intro = ref("Всё, что нужно знать о наших материалах, подходе к созданию и уходе за вещами.");
-    
-    // Вынесли картинку в стору
-    const image = ref(faqImage);
+    const heading = ref("");
+    const intro = ref("");
+    const image = ref("");
+    const faqItems = ref([]);
 
-    const faqItems = ref([
-        {
-            question: "Из каких тканей вы шьёте?",
-            answer: "Мы работаем только с сертифицированными натуральными материалами: итальянский шёлк, японский хлопок, европейский лён и шерсть. Каждый рулон проходит контроль на плотность и устойчивость окраски."
-        },
-        {
-            question: "Как правильно подобрать размер?",
-            answer: "На странице каждой вещи есть детальная размерная сетка с замерами в сантиметрах. Если сомневаетесь — напишите нам, поможем выбрать идеальный вариант по вашим параметрам."
-        },
-        {
-            question: "Как ухаживать за изделиями?",
-            answer: "К каждому заказу прилагается памятка по уходу. Рекомендации зависят от состава ткани: деликатная стирка, профессиональная чистка или бережная глажка. Следуйте им, и вещь прослужит годы."
-        },
-        {
-            question: "Вы придерживаетесь эко-стандартов?",
-            answer: "Да, мы используем красители без тяжёлых металлов, перерабатываемую упаковку и оптимизируем раскрой, чтобы минимизировать отходы производства."
+    const isLoading = ref(false);
+    const error = ref(null);
+
+    const loadFaqData = async () => {
+        // Если данные уже есть, не делаем запрос (для SSR)
+        if (heading.value) {
+            return {
+                heading: heading.value,
+                intro: intro.value,
+                image: image.value,
+                faqItems: faqItems.value
+            };
         }
-    ]);
 
-    return { heading, intro, image, faqItems };
+        isLoading.value = true;
+        error.value = null;
+
+        try {
+            const response = await useFaqApi();
+
+            if (response && response.data) {
+                const data = response.data.attributes || response.data;
+                const config = useRuntimeConfig();
+                const baseUrl = config.public.strapi.url;
+
+                heading.value = data.heading;
+                intro.value = data.intro;
+
+                // 1. Формируем полный путь до картинки
+                if (data.image) {
+                    const imgObj = data.image.data?.attributes || data.image;
+                    image.value = `${baseUrl}${imgObj.url}`;
+                }
+
+                // 2. Мапим вопросы-ответы
+                if (data.faqItems) {
+                    faqItems.value = data.faqItems.map((item) => ({
+                        id: item.id,
+                        question: item.question,
+                        answer: item.answer
+                    }));
+                }
+            }
+
+            // Возвращаем данные для правильной гидратации Nuxt
+            return {
+                heading: heading.value,
+                intro: intro.value,
+                image: image.value,
+                faqItems: faqItems.value
+            };
+
+        } catch (e) {
+            console.error('Ошибка в сторе FAQ:', e);
+            error.value = e.message || 'Ошибка загрузки';
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
+    return { heading, intro, image, faqItems, isLoading, error, loadFaqData };
 });

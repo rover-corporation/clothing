@@ -1,0 +1,36 @@
+{
+  "kind": "singleType",
+  "collectionName": "faq_sections",
+  "info": {
+    "singularName": "faq-section",
+    "pluralName": "faq-sections",
+    "displayName": "faqSection"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "intro": {
+      "type": "text"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "faqItems": {
+      "type": "component",
+      "component": "shared.faq-item",
+      "repeatable": true
+    }
+  }
+}
