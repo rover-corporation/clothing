@@ -53,7 +53,7 @@ if (data.value && !store.heading) {
   store.heading = data.value.heading;
   store.description = data.value.description;
   store.features = data.value.features;
-  console.log(data.value.features)
+
   store.image = data.value.image;
 }
 </script>

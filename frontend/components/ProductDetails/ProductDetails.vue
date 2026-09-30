@@ -4,12 +4,12 @@
 
     <div class="product-top-row">
         <div class="product-gallery">
-      <div class="main-image-container">
+      <div class="main-image-container zoomable" @click="openGallery">
         <!-- Кнопка "Назад" -->
         <button 
           v-if="product.images && product.images.length > 1"
           class="slider-nav prev" 
-          @click="prevImage"
+          @click.stop="prevImage"
           aria-label="Предыдущее фото"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 18l-6-6 6-6"/></svg>
@@ -35,7 +35,7 @@
         <button 
           v-if="product.images && product.images.length > 1"
           class="slider-nav next" 
-          @click="nextImage"
+          @click.stop="nextImage"
           aria-label="Следующее фото"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18l6-6-6-6"/></svg>
@@ -165,11 +165,52 @@
       </div>
     </gModal>
 
+    <ClientOnly>
+
+      <Teleport to="body">
+        <transition name="fade">
+          <div v-if="isGalleryOpen" class="lightbox-overlay" @click.self="closeGallery">
+            
+            <!-- Кнопка закрытия -->
+            <button class="lightbox-close" @click="closeGallery" aria-label="Закрыть">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+  
+            <!-- Счетчик -->
+            <div v-if="product.images.length > 1" class="lightbox-counter">
+              {{ currentImageIndex + 1 }} / {{ product.images.length }}
+            </div>
+  
+            <!-- Кнопка Назад -->
+            <button v-if="product.images.length > 1" class="lightbox-nav prev" @click.stop="prevImage">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+  
+            <!-- Сама картинка (Анимированная) -->
+            <transition name="fade" mode="out-in">
+              <img 
+                :key="currentImageIndex" 
+                :src="product.images[currentImageIndex]" 
+                class="lightbox-img" 
+                @click.stop
+              />
+            </transition>
+  
+            <!-- Кнопка Вперед -->
+            <button v-if="product.images.length > 1" class="lightbox-nav next" @click.stop="nextImage">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+  
+          </div>
+        </transition>
+      </Teleport>
+    </ClientOnly>
+
   </div>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted, onBeforeUnmount, watch } from 'vue'; 
 import { vMaska } from 'maska/vue';
 import gModal from '@/components/gModal/gModal.vue';
 import { useOrdersStore } from '~/stores/orders/orderStore';
@@ -203,6 +244,42 @@ const prevImage = () => {
       : currentImageIndex.value - 1
   }
 }
+
+const isGalleryOpen = ref(false);
+
+const openGallery = () => {
+  if (props.product.images?.length > 0) {
+    isGalleryOpen.value = true;
+  }
+};
+
+const closeGallery = () => {
+  isGalleryOpen.value = false;
+};
+
+// Блокировка скролла сайта при открытой галерее
+watch(isGalleryOpen, (isOpen) => {
+  if (isOpen) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
+});
+
+// Управление клавиатурой (только если галерея открыта)
+const handleKeydown = (e) => {
+  if (!isGalleryOpen.value) return;
+  
+  if (e.key === 'Escape') closeGallery();
+  if (e.key === 'ArrowLeft') prevImage();
+  if (e.key === 'ArrowRight') nextImage();
+};
+
+onMounted(() => window.addEventListener('keydown', handleKeydown));
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeydown);
+  document.body.style.overflow = ''; // На всякий случай возвращаем скролл
+});
 
 const ordersStore = useOrdersStore();
 const isModalOpen = ref(false);

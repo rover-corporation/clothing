@@ -53,7 +53,7 @@ await useAsyncData('hero-banner-data', async () => {
   return true;
 });
 
-console.log(heroData.value)
+
 </script>
 
 <style lang="scss" scoped>

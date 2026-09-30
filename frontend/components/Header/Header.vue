@@ -50,7 +50,7 @@ await useAsyncData('header-links-data', async () => {
   return true 
 })
 
-console.log(headerStore.headerLinks)
+
 
 // Логика бургер-меню
 const isMenuOpen = ref(false)

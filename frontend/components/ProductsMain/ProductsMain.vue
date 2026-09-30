@@ -277,7 +277,7 @@ const setPage = (page) => {
 watch([selectedPrice, selectedColors, selectedSizes, selectedMaterials], () => {
     currentPage.value = 1
 }, { deep: true })
-console.log(paginatedProducts.value)
+
 
 </script>
 
