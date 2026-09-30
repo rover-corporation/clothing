@@ -4,5 +4,5 @@ export const useProductsApi = async () => {
   const baseUrl = config.public.strapi.url;
   
   // Для Collection Type запрос всегда во множественном числе (products)
-  return await $fetch(`${baseUrl}/api/products?populate=*`);
+  return await $fetch(`${baseUrl}/api/products?populate=*&pagination[limit]=100`);
 };

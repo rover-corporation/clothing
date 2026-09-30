@@ -73,19 +73,39 @@
 
                     <!-- Пагинация -->
                     <div v-if="totalPages > 1" class="pagination">
-                        <button class="page-btn" :disabled="currentPage === 1" @click="prevPage">&larr; Назад</button>
+                        <button 
+                            class="page-btn" 
+                            :disabled="currentPage === 1"
+                            @click="prevPage"
+                        >
+                            &larr; 
+                        </button>
+
                         <div class="page-numbers">
-                            <button 
-                                v-for="page in totalPages" 
-                                :key="page"
-                                class="page-btn"
-                                :class="{ active: currentPage === page }"
-                                @click="setPage(page)"
-                            >
-                                {{ page }}
-                            </button>
+                            <!-- Проходим по массиву умной пагинации -->
+                            <template v-for="(item, index) in visiblePages" :key="index">
+                                <!-- Если это многоточие -->
+                                <span v-if="item === '...'" class="page-dots">...</span>
+                                
+                                <!-- Если это номер страницы -->
+                                <button 
+                                    v-else
+                                    class="page-btn"
+                                    :class="{ active: currentPage === item }"
+                                    @click="setPage(item)"
+                                >
+                                    {{ item }}
+                                </button>
+                            </template>
                         </div>
-                        <button class="page-btn" :disabled="currentPage === totalPages" @click="nextPage">Вперед &rarr;</button>
+
+                        <button 
+                            class="page-btn" 
+                            :disabled="currentPage === totalPages"
+                            @click="nextPage"
+                        >
+                             &rarr;
+                        </button>
                     </div>
                 </div>
 
@@ -198,6 +218,44 @@ const totalPages = computed(() => {
     return Math.ceil(filteredProducts.value.length / itemsPerPage)
 })
 
+const visiblePages = computed(() => {
+    const total = totalPages.value;
+    const current = currentPage.value;
+    const delta = 1; // Сколько страниц показывать слева и справа от текущей
+
+    // Если страниц 5 или меньше, показываем их все
+    if (total <= 5) {
+        return Array.from({ length: total }, (_, i) => i + 1);
+    }
+
+    const pages = [];
+    const left = Math.max(2, current - delta);
+    const right = Math.min(total - 1, current + delta);
+
+    // Всегда добавляем первую страницу
+    pages.push(1);
+
+    // Добавляем левое многоточие, если между 1 и началом видимого блока есть разрыв
+    if (left > 2) {
+        pages.push('...');
+    }
+
+    // Добавляем страницы вокруг текущей
+    for (let i = left; i <= right; i++) {
+        pages.push(i);
+    }
+
+    // Добавляем правое многоточие, если между концом видимого блока и последней есть разрыв
+    if (right < total - 1) {
+        pages.push('...');
+    }
+
+    // Всегда добавляем последнюю страницу
+    pages.push(total);
+
+    return pages;
+})
+
 // Вырезаем только те товары, которые нужны для текущей страницы
 const paginatedProducts = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage
@@ -216,11 +274,9 @@ const setPage = (page) => {
     currentPage.value = page
 }
 
-// 🚨 ВАЖНО: Если пользователь меняет любой фильтр, сбрасываем страницу на первую!
 watch([selectedPrice, selectedColors, selectedSizes, selectedMaterials], () => {
     currentPage.value = 1
-}, { deep: true }) // deep нужен для объектов (selectedPrice)
-
+}, { deep: true })
 console.log(paginatedProducts.value)
 
 </script>
