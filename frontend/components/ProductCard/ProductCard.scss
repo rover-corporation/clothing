@@ -1,5 +1,6 @@
 .prod {
   position: relative;
+  height: 100%;
   background: #ffffff;
   border-radius: 1rem;
   overflow: hidden;
@@ -47,23 +48,31 @@
   background: #ffffff; // Явный белый фон
   padding: 1.25rem; // Равномерные внутренние отступы
   // Отрицательный margin удален, теперь контент идет строго после картинки
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .prod-title {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: #111827;
-  margin: 0 0 0.5rem;
+  // margin: 0 0 0.5rem;
   line-height: 1.3;
-  letter-spacing: 0.01em;
   height: 47px;
+  overflow: hidden;
+  // letter-spacing: 0.01em;
+  // height: 50px;
+  
 }
 
 .prod-desc {
   font-size: 0.85rem;
   color: #6b7280;
   line-height: 1.5;
-  margin: 0 0 1.25rem;
+  // margin: 0 0 1.25rem;
   
   // Ограничиваем описание 2 строками с многоточием
   display: -webkit-box;
