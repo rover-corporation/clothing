@@ -1,7 +1,7 @@
 <!-- components/Filters/MaterialFilter.vue -->
 <template>
   <div class="material-filter">
-    <h3 class="filter-title">Материал</h3>
+    <h3 class="filter-title">{{ props.title }}</h3>
     
     <div class="materials-list">
       <!-- Перебираем доступные материалы -->
@@ -39,6 +39,10 @@ const props = defineProps({
       { value: 'denim', label: 'Деним' },
       { value: 'leather', label: 'Кожа' }
     ]
+  },
+  title: {
+    type: String,
+    default: '',
   }
 })
 

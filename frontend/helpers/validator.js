@@ -90,7 +90,16 @@ export class Validatorr
                 }
 
                 return true;
-            }
+            },
+
+			check(field) {
+				const input = field.querySelector('input[type="checkbox"]');
+				if (input && input.checked) {
+					return true;
+				}
+				this.setMessage(field, 'Необходимо ваше согласие');
+				return false;
+			}
 		};
 	}
 

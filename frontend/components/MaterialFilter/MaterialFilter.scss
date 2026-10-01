@@ -25,12 +25,38 @@
     }
   }
 
-  .materials-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem; // Больше воздуха между кнопками
+.materials-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem; // Больше воздуха между кнопками
+  max-height: 270px;
+  padding: 5px;
+  overflow-y: auto;
+
+  /* === 1. Стандарт для Firefox и современных браузеров === */
+  scrollbar-width: thin; /* Делает скроллбар тонким */
+  scrollbar-color: #b0b0b0 transparent; /* Цвет ползунка и цвет фона (прозрачный) */
+
+  /* === 2. Кастомный скроллбар для Chrome, Edge, Safari (WebKit) === */
+  &::-webkit-scrollbar {
+    width: 6px; /* Ширина вертикального скроллбара */
   }
 
+  &::-webkit-scrollbar-track {
+    background: transparent; /* Прозрачный фон дорожки (чтобы не утяжелять дизайн) */
+    border-radius: 10px;     /* Скругление дорожки */
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #b0b0b0; /* Цвет самого ползунка (светло-серый) */
+    border-radius: 10px;       /* Круглый ползунок */
+  }
+
+  /* Эффект при наведении на ползунок */
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #888888; /* Чуть темнее при наведении для отзывчивости */
+  }
+}
   .material-btn {
     position: relative;
     display: inline-flex;

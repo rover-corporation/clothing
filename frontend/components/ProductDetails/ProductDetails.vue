@@ -24,11 +24,7 @@
             :alt="`${product.title} - фото ${currentImageIndex + 1}`" 
             class="main-image"
           />
-          <img 
-            v-else 
-            src="https://via.placeholder.com/600x800?text=Нет+фото" 
-            class="main-image empty"
-          />
+          
         </transition>
 
         <!-- Кнопка "Вперед" -->
@@ -72,13 +68,24 @@
 
       <!-- Характеристики (Цвет и Состав) -->
       <div class="attributes-block">
-        <div v-if="product.color" class="attribute">
+
+
+        
+        <div v-if="product.categories" class="attribute">
+          <span class="attr-label">Категории:</span>
+          <span class="attr-value">{{ product.categories.join(', ') }}</span>
+        </div>
+        <div v-if="product.colors" class="attribute">
           <span class="attr-label">Цвет:</span>
-          <span class="attr-value">{{ product.color }}</span>
+          <span class="attr-value">{{ product.colors.join(', ') }}</span>
         </div>
         <div v-if="product.materials && product.materials.length > 0" class="attribute">
           <span class="attr-label">Состав:</span>
           <span class="attr-value">{{ product.materials.join(', ') }}</span>
+        </div>
+        <div v-if="product.patterns && product.patterns.length > 0" class="attribute">
+          <span class="attr-label">Узор:</span>
+          <span class="attr-value">{{ product.patterns.join(', ') }}</span>
         </div>
       </div>
 
@@ -139,6 +146,17 @@
             <input type="tel" v-model="formData.phone" v-maska data-maska="+7-###-###-##-##" placeholder="+7-999-999-99-99" />
             <div class="_error-msg"></div>
           </div>
+
+          <div class="_field checkbox-field" data-call="check">
+          <label class="custom-checkbox-wrapper">
+            <input type="checkbox" v-model="formData.agree" />
+            <span class="checkmark"></span>
+            <span class="checkbox-text">
+              Я согласен с <a href="/personal" target="_blank">политикой обработки персональных данных</a>
+            </span>
+          </label>
+          <div class="_error-msg"></div>
+        </div>
         </div>
 
         <div class="form-actions">
@@ -231,6 +249,8 @@ const renderMarkdown = (text) => {
   return md.render(text);
 };
 
+console.log(props.product.materials)
+
 const currentImageIndex = ref(0)
 const nextImage = () => {
   if (props.product.images?.length) {
@@ -289,6 +309,7 @@ const orderFormRef = ref(null);
 const formData = reactive({
   name: '',
   phone: '',
+  agree: false,
 });
 
 const closeModal = () => {
@@ -297,6 +318,7 @@ const closeModal = () => {
     isSuccess.value = false;
     formData.name = '';
     formData.phone = '';
+    formData.agree = false;
   }, 300);
 };
 

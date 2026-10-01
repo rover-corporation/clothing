@@ -1,23 +1,68 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
+// stores/privacyStore.js
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
+import { usePersonalApi } from '~/api/personal'
 
 export const usePersonalStore = defineStore('personalStore', () => {
+    // Оставляем дефолтные значения (или пустые), чтобы страница не была пустой до загрузки
     const content = ref({
-        pageTitle: "Политика обработки персональных данных",
-        lastUpdated: "24 сентября 2026 г.",
-        sections: [
-            { title: "1. Общие положения", content: ["Настоящий документ регламентирует порядок обработки персональных данных в соответствии с ФЗ-152 «О персональных данных»."] },
-            { title: "2. Правовые основания", content: ["Обработка осуществляется на основании вашего согласия, необходимости исполнения договора купли-продажи и требований законодательства РФ."] },
-            { title: "3. Категории обрабатываемых данных", content: ["Мы обрабатываем ФИО, контактные данные, паспортные данные (при необходимости возвратов), историю покупок и платежную информацию."] },
-            { title: "4. Цели обработки", content: ["Идентификация пользователя, оформление и доставка заказов, техническая поддержка, рассылка уведомлений и статистический анализ."] },
-            { title: "5. Порядок получения согласия", content: ["Согласие считается данным в момент заполнения формы на сайте, оформления заказа или подписки на рассылку."] },
-            { title: "6. Сроки хранения данных", content: ["Данные хранятся до достижения целей обработки или до отзыва согласия. После этого информация подлежит удалению или обезличиванию."] },
-            { title: "7. Меры защиты информации", content: ["Применяются организационные и технические меры: шифрование, контроль доступа, резервное копирование и регулярные проверки безопасности."] },
-            { title: "8. Права субъекта данных", content: ["Вы имеете право на доступ к своим данным, их исправление, ограничение обработки, переносимость и полное удаление."] },
-            { title: "9. Ответственность сторон", content: ["Оператор несет ответственность за сохранность данных в рамках действующего законодательства. Пользователь обязан предоставлять достоверную информацию."] },
-            { title: "10. Заключительные положения", content: ["Настоящая Политика действует бессрочно до её замены новой версией. Все споры разрешаются в соответствии с законодательством РФ."] }
-        ]
-    });
+        pageTitle: "",
+        lastUpdated: "",
+        sections: []
+    })
+    
+    const isLoading = ref(false)
+    const error = ref(null)
 
-    return { content };
-});
+    // Вспомогательная функция для форматирования даты в "24 сентября 2026 г."
+    const formatDate = (dateString) => {
+        if (!dateString) return ""
+        const date = new Date(dateString)
+        const options = { day: 'numeric', month: 'long', year: 'numeric' }
+        return date.toLocaleDateString('ru-RU', options) + ' г.'
+    }
+
+    const fetchPersonal = async () => {
+        // Если данные уже загружены, не делаем запрос повторно
+        if (content.value.pageTitle) return
+
+        isLoading.value = true
+        error.value = null
+
+        try {
+            const response = await usePersonalApi()
+            
+            // Strapi возвращает { data: { ... } }, достаем нужную часть
+            // Поддержка как Strapi v4 (attributes), так и v5 (плоская структура)
+            const data = response.data?.attributes || response.data
+
+            if (data) {
+                content.value = {
+                    pageTitle: data.pageTitle || 'Политика обработки персональных данных',
+                    lastUpdated: formatDate(data.lastUpdated),
+                    // Маппим секции
+                    sections: (data.sections || []).map(sec => ({
+                        title: sec.title,
+                        // Strapi отдает long text как одну строку. 
+                        // Мы разбиваем ее по переносу строки (Enter), убираем пустые и получаем массив строк!
+                        content: sec.content 
+                            ? sec.content.split('\n').map(p => p.trim()).filter(p => p.length > 0)
+                            : []
+                    }))
+                }
+            }
+        } catch (err) {
+            console.error('Ошибка при загрузке Политики обработки персональных данных:', err)
+            error.value = err
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    return { 
+        content, 
+        isLoading, 
+        error, 
+        fetchPersonal 
+    }
+})

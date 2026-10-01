@@ -12,6 +12,17 @@ export interface BlocksFeature extends Struct.ComponentSchema {
   };
 }
 
+export interface BlocksSection extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_sections';
+  info: {
+    displayName: 'Section';
+  };
+  attributes: {
+    content: Schema.Attribute.Text;
+    title: Schema.Attribute.String;
+  };
+}
+
 export interface SharedDeveloper extends Struct.ComponentSchema {
   collectionName: 'components_shared_developers';
   info: {
@@ -106,6 +117,7 @@ declare module '@strapi/strapi' {
   export namespace Public {
     export interface ComponentSchemas {
       'blocks.feature': BlocksFeature;
+      'blocks.section': BlocksSection;
       'shared.developer': SharedDeveloper;
       'shared.faq-item': SharedFaqItem;
       'shared.feat-tag': SharedFeatTag;

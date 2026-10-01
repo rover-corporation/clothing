@@ -53,10 +53,11 @@ export const useSingleProductStore = defineStore('singleProductStore', () => {
                     
                     // 🔥 ИСПРАВЛЕНИЕ 3: Назвали images, во множественном числе!
                     images: galleryUrls,
-                    
-                    color: attr.color,
-                    sizes: attr.sizes ? attr.sizes.map(s => s.value) : [],
-                    materials: attr.materials ? attr.materials.map(m => m.value) : []
+                    categories: attr.categories ? attr.categories.map(c => c.label) : [],
+                    colors: attr.colors ? attr.colors.map(c =>c.label) : [],
+                    sizes: attr.sizes ? attr.sizes.map(s => s.label) : [],
+                    materials: attr.materials ? attr.materials.map(m => m.label) : [],
+                    patterns: attr.patterns ? attr.patterns.map(p =>p.label) : []
                 };
             }
 

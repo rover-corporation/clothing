@@ -9,7 +9,7 @@
 
             <div class="products-catalog">
 
-                <!-- 🔥 НОВОЕ: Кнопка вызова фильтров (только для мобилок) -->
+                <!-- Кнопка вызова фильтров (только для мобилок) -->
                 <div class="mobile-filter-trigger">
                     <button class="btn-open-filters" @click="openFilters">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 21v-7m0-4V3m8 18v-9m0-4V3m8 18v-5m0-4V3M1 14h6m2-6h6m2 8h6"/></svg>
@@ -20,14 +20,14 @@
                     </button>
                 </div>
 
-                <!-- 🔥 НОВОЕ: Затемнение фона при открытых фильтрах на мобилке -->
+                <!-- Затемнение фона при открытых фильтрах на мобилке -->
                 <div 
                     class="filters-overlay" 
                     :class="{ 'is-active': isMobileFiltersOpen }"
                     @click="closeFilters"
                 ></div>
 
-                <!-- Блок фильтров (На ПК - сайдбар, на мобилке - шторка) -->
+                <!-- Блок фильтров -->
                 <div class="products-filters" :class="{ 'is-open': isMobileFiltersOpen }">
                     
                     <!-- Шапка фильтров (только мобилка) -->
@@ -42,9 +42,34 @@
                         </CtaButton>
                                           
                         <PriceFilter v-model="selectedPrice" />
-                        <ColorFilter v-model="selectedColors" />
-                        <SizeFilter v-model="selectedSizes" />
-                        <MaterialFilter v-model="selectedMaterials" />
+                        
+                        <MaterialFilter 
+                            v-model="selectedCategories" 
+                            :available-materials="categories" 
+                            title="Категории"
+                        />
+                        
+                        <ColorFilter 
+                            v-model="selectedColors" 
+                            :available-colors="colors" 
+                        />
+                        
+                        <!-- <SizeFilter 
+                            v-model="selectedSizes" 
+                            :available-sizes="sizes"
+                        /> -->
+                        
+                        <!-- <MaterialFilter 
+                            v-model="selectedMaterials" 
+                            :available-materials="materials" 
+                            title="Материал"
+                        /> -->
+                        
+                        <MaterialFilter 
+                            v-model="selectedPatterns" 
+                            :available-materials="patterns" 
+                            title="Узоры"
+                        />
                     </div>
 
                     <!-- Подвал фильтров (только мобилка) -->
@@ -55,7 +80,7 @@
                     </div>
                 </div>
 
-                <!-- Список товаров и пагинация (Без изменений) -->
+                <!-- Список товаров и пагинация -->
                 <div class="product-list-wrapper">
                     <div class="product-list">
                         <template v-if="paginatedProducts.length > 0">
@@ -82,12 +107,8 @@
                         </button>
 
                         <div class="page-numbers">
-                            <!-- Проходим по массиву умной пагинации -->
                             <template v-for="(item, index) in visiblePages" :key="index">
-                                <!-- Если это многоточие -->
                                 <span v-if="item === '...'" class="page-dots">...</span>
-                                
-                                <!-- Если это номер страницы -->
                                 <button 
                                     v-else
                                     class="page-btn"
@@ -116,9 +137,10 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue' // Добавили watch
+import { ref, computed, watch, onBeforeUnmount } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useProductStore } from '~/stores/products/productsStore'
+import { useFiltersStore } from '~/stores/filters/filtersStore'
 
 import CtaButton from '@/components/CtaButton/CtaButton.vue'
 import ProductCard from '@/components/ProductCard/ProductCard.vue'
@@ -127,93 +149,135 @@ import ColorFilter from '@/components/ColorFilter/ColorFilter.vue'
 import SizeFilter from '@/components/SizeFilter/SizeFilter.vue'
 import MaterialFilter from '@/components/MaterialFilter/MaterialFilter.vue'
 
-import { onBeforeUnmount } from 'vue' // <-- добавьте в начало импортов
-
-// === МАГИЯ МОБИЛЬНЫХ ФИЛЬТРОВ ===
+// === МОБИЛЬНЫЕ ФИЛЬТРЫ ===
 const isMobileFiltersOpen = ref(false)
 
 const openFilters = () => {
     isMobileFiltersOpen.value = true
-    document.body.style.overflow = 'hidden' // Блокируем скролл сайта
+    document.body.style.overflow = 'hidden' 
 }
 
 const closeFilters = () => {
     isMobileFiltersOpen.value = false
-    document.body.style.overflow = '' // Возвращаем скролл
+    document.body.style.overflow = '' 
 }
 
-// Защита: если ушли со страницы с открытыми фильтрами, разблокируем скролл
 onBeforeUnmount(() => {
     document.body.style.overflow = ''
 })
 
-// Подсчет количества выбранных фильтров для бейджика
-const activeFiltersCount = computed(() => {
-    let count = 0
-    if (selectedPrice.value.min || selectedPrice.value.max) count++
-    count += selectedColors.value.length
-    count += selectedSizes.value.length
-    count += selectedMaterials.value.length
-    return count
-})
 
+// === ЗАГРУЗКА ДАННЫХ И СТОРЫ ===
 const productStore = useProductStore()
 const { products } = storeToRefs(productStore)
 
-const { data } = await useAsyncData('catalog-products', async () => {
+const filtersStore = useFiltersStore();
+const { colors, sizes, materials, categories, patterns } = storeToRefs(filtersStore);
+
+// Загружаем товары
+const { data: catalogData } = await useAsyncData('catalog-products', async () => {
   return await productStore.loadProducts()
 })
 
-if (data.value && productStore.products.length === 0) {
-    productStore.products = data.value.products
+if (catalogData.value && productStore.products.length === 0) {
+    productStore.products = catalogData.value.products
 }
 
+// Загружаем фильтры
+await useAsyncData('filters-data', async () => {
+  await filtersStore.fetchFilters();
+  return true; 
+});
+
+
+// === СОСТОЯНИЯ ФИЛЬТРОВ ===
 const selectedPrice = ref({ min: null, max: null })
+const selectedCategories = ref([])
 const selectedColors = ref([])
 const selectedSizes = ref([])
 const selectedMaterials = ref([])
+const selectedPatterns = ref([])
 
+// 🔥 ИСПРАВЛЕНО: Теперь учитываем Категории и Узоры при подсчете бейджика
+const activeFiltersCount = computed(() => {
+    let count = 0
+    if (selectedPrice.value.min || selectedPrice.value.max) count++
+    count += selectedCategories.value.length
+    count += selectedColors.value.length
+    count += selectedSizes.value.length
+    count += selectedMaterials.value.length
+    count += selectedPatterns.value.length
+    return count
+})
+
+// 🔥 ИСПРАВЛЕНО: Сброс Категорий и Узоров
 const resetFilters = () => {
     selectedPrice.value = { min: null, max: null }
+    selectedCategories.value = []
     selectedColors.value = []
     selectedSizes.value = []
     selectedMaterials.value = []
+    selectedPatterns.value = []
 }
 
+// === ЛОГИКА ФИЛЬТРАЦИИ ===
 // === МАГИЯ ФИЛЬТРАЦИИ ===
 const filteredProducts = computed(() => {
     return products.value.filter(product => {
+        // 1. Цена (тут всё просто, price - это число)
         if (selectedPrice.value.min !== null && selectedPrice.value.min !== '') {
-            if (product.price < selectedPrice.value.min) return false
+            if (product.price < selectedPrice.value.min) return false;
         }
         if (selectedPrice.value.max !== null && selectedPrice.value.max !== '') {
-            if (product.price > selectedPrice.value.max) return false
+            if (product.price > selectedPrice.value.max) return false;
         }
 
+        // 2. Категории
+        if (selectedCategories.value.length > 0) {
+            // Берем массив объектов [{value: 'dresses'}, ...] и делаем плоский массив ['dresses', ...]
+            const productCategories = (product.categories || []).map(item => item.value);
+            // Проверяем, есть ли пересечения с выбранными фильтрами
+            const hasMatch = selectedCategories.value.some(selected => productCategories.includes(selected));
+            if (!hasMatch) return false;
+        }
+
+        // 3. Цвета
         if (selectedColors.value.length > 0) {
-            if (!selectedColors.value.includes(product.color)) return false
+            const productColors = (product.colors || []).map(item => item.value);
+            const hasMatch = selectedColors.value.some(selected => productColors.includes(selected));
+            if (!hasMatch) return false;
         }
 
+        // 4. Размеры
         if (selectedSizes.value.length > 0) {
-            const hasSize = selectedSizes.value.some(s => product.size.includes(s))
-            if (!hasSize) return false
+            const productSizes = (product.sizes || []).map(item => item.value);
+            const hasMatch = selectedSizes.value.some(selected => productSizes.includes(selected));
+            if (!hasMatch) return false;
         }
 
+        // 5. Материалы
         if (selectedMaterials.value.length > 0) {
-            const hasMaterial = selectedMaterials.value.some(m => product.material.includes(m))
-            if (!hasMaterial) return false
+            const productMaterials = (product.materials || []).map(item => item.value);
+            const hasMatch = selectedMaterials.value.some(selected => productMaterials.includes(selected));
+            if (!hasMatch) return false;
         }
 
-        return true
+        // 6. Узоры
+        if (selectedPatterns.value.length > 0) {
+            const productPatterns = (product.patterns || []).map(item => item.value);
+            const hasMatch = selectedPatterns.value.some(selected => productPatterns.includes(selected));
+            if (!hasMatch) return false;
+        }
+
+        return true; // Если товар прошел все фильтры, оставляем его
     })
 })
 
-// 🔥 === МАГИЯ ПАГИНАЦИИ ===
 
+// === ПАГИНАЦИЯ ===
 const currentPage = ref(1)
-const itemsPerPage = 9 // Количество товаров на странице
+const itemsPerPage = 9 
 
-// Считаем общее количество страниц (округляем вверх)
 const totalPages = computed(() => {
     return Math.ceil(filteredProducts.value.length / itemsPerPage)
 })
@@ -221,49 +285,29 @@ const totalPages = computed(() => {
 const visiblePages = computed(() => {
     const total = totalPages.value;
     const current = currentPage.value;
-    const delta = 1; // Сколько страниц показывать слева и справа от текущей
+    const delta = 1; 
 
-    // Если страниц 5 или меньше, показываем их все
-    if (total <= 5) {
-        return Array.from({ length: total }, (_, i) => i + 1);
-    }
+    if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
 
     const pages = [];
     const left = Math.max(2, current - delta);
     const right = Math.min(total - 1, current + delta);
 
-    // Всегда добавляем первую страницу
     pages.push(1);
-
-    // Добавляем левое многоточие, если между 1 и началом видимого блока есть разрыв
-    if (left > 2) {
-        pages.push('...');
-    }
-
-    // Добавляем страницы вокруг текущей
-    for (let i = left; i <= right; i++) {
-        pages.push(i);
-    }
-
-    // Добавляем правое многоточие, если между концом видимого блока и последней есть разрыв
-    if (right < total - 1) {
-        pages.push('...');
-    }
-
-    // Всегда добавляем последнюю страницу
+    if (left > 2) pages.push('...');
+    for (let i = left; i <= right; i++) pages.push(i);
+    if (right < total - 1) pages.push('...');
     pages.push(total);
 
     return pages;
 })
 
-// Вырезаем только те товары, которые нужны для текущей страницы
 const paginatedProducts = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage
     const end = start + itemsPerPage
     return filteredProducts.value.slice(start, end)
 })
 
-// Функции переключения страниц
 const nextPage = () => {
     if (currentPage.value < totalPages.value) currentPage.value++
 }
@@ -274,15 +318,21 @@ const setPage = (page) => {
     currentPage.value = page
 }
 
-watch([selectedPrice, selectedColors, selectedSizes, selectedMaterials], () => {
+// 🔥 ИСПРАВЛЕНО: Добавлены новые фильтры в слежение (watch). 
+// При клике на Категорию или Узор страница будет сбрасываться на первую
+watch([
+    selectedPrice, 
+    selectedCategories, 
+    selectedColors, 
+    selectedSizes, 
+    selectedMaterials, 
+    selectedPatterns
+], () => {
     currentPage.value = 1
 }, { deep: true })
-
 
 </script>
 
 <style lang="scss" scoped>
 @use './ProductsMain.scss' as *;
-
-
 </style>

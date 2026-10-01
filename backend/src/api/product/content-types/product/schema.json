@@ -20,9 +20,6 @@
     "price": {
       "type": "integer"
     },
-    "color": {
-      "type": "string"
-    },
     "images": {
       "type": "media",
       "multiple": true,
@@ -33,18 +30,38 @@
         "audios"
       ]
     },
-    "sizes": {
-      "type": "component",
-      "component": "shared.tag",
-      "repeatable": true
-    },
-    "materials": {
-      "type": "component",
-      "component": "shared.tag",
-      "repeatable": true
-    },
     "detailedDescription": {
       "type": "richtext"
+    },
+    "categories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::category.category",
+      "mappedBy": "products"
+    },
+    "colors": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::color.color",
+      "mappedBy": "products"
+    },
+    "sizes": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::size.size",
+      "inversedBy": "products"
+    },
+    "materials": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::material.material",
+      "mappedBy": "products"
+    },
+    "patterns": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::pattern.pattern",
+      "mappedBy": "products"
     }
   }
 }
