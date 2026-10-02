@@ -1,10 +1,8 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-// Импорт вашей функции запроса
 import { useBrandFeatureApi } from "~/api/brandFeatures"; 
 
 export const useBrandFeaturesStore = defineStore('brandFeaturesStore', () => {
-    // Изначально пустые значения
     const heading = ref("");
     const subtitle = ref("");
     const features = ref([]);
@@ -13,14 +11,13 @@ export const useBrandFeaturesStore = defineStore('brandFeaturesStore', () => {
     const error = ref(null);
 
     const loadBrandFeatures = async () => {
-        // Если уже загружено, не делаем запрос повторно, а просто возвращаем данные (для SSR)
         if (heading.value) return { heading: heading.value, subtitle: subtitle.value, features: features.value };
 
         isLoading.value = true;
         error.value = null;
 
         try {
-            const response = await useBrandFeatureApi(); // функция с $fetch и правильным populate
+            const response = await useBrandFeatureApi();
 
             if (response && response.data) {
                 const data = response.data.attributes || response.data;
@@ -30,7 +27,6 @@ export const useBrandFeaturesStore = defineStore('brandFeaturesStore', () => {
                 heading.value = data.heading;
                 subtitle.value = data.subtitle;
 
-                // Мапим массив фич
                 if (data.FeatureCard) {
                     features.value = data.FeatureCard.map((item) => {
                         let imageUrl = '';
@@ -49,7 +45,6 @@ export const useBrandFeaturesStore = defineStore('brandFeaturesStore', () => {
                 }
             }
 
-            // Обязательно возвращаем для SSR (гидратации)
             return {
                 heading: heading.value,
                 subtitle: subtitle.value,

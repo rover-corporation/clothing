@@ -1,5 +1,4 @@
 <template>
-  <!-- v-if предотвращает рендер пустой секции, если данные еще не прилетели -->
 
    
 
@@ -25,7 +24,6 @@
       </div>
 
       <div class="hero-visual">
-        <!-- Убедитесь, что image содержит данные перед рендером img -->
         <img 
           v-if="heroData.image"
           :src="heroData.image" 
@@ -40,14 +38,11 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-// Укажите правильный путь к вашему стору
 import { useHeroStore } from '@/stores/mainBannerHero' 
 
 const heroStore = useHeroStore()
-// storeToRefs позволяет использовать heroData напрямую в <template>
 const { heroData } = storeToRefs(heroStore)
 
-// Обязательный вызов для Nuxt 3 (SSR-загрузка данных перед отрисовкой HTML)
 await useAsyncData('hero-banner-data', async () => {
   await heroStore.loadHeroData();
   return true;

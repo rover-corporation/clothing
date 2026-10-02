@@ -1,9 +1,7 @@
 <template>
-  <!-- Добавлен v-if, чтобы скрыть пустой футер до загрузки данных -->
   <footer v-if="brandDescription" class="main-footer">
     <div class="container">
       <div class="footer-content">
-        <!-- Бренд -->
         <div class="footer-brand">
           <NuxtLink to="/" class="footer-logo" aria-label="На главную">
             <Logo is-white="true" />
@@ -11,7 +9,6 @@
           <p class="footer-description">{{ brandDescription }}</p>
 
           <div class="footer-contacts">
-            <!-- 🚨 ДОБАВЛЕН обязательный параметр :key="item.id" -->
             <div 
               class="footer-contactItem" 
               v-for="item in contactLinks" 
@@ -22,11 +19,9 @@
           </div>
         </div>
 
-        <!-- Ссылки -->
         <div class="footer-links">
           <div class="link-group">
             <h4 class="link-group-title">Навигация</h4>
-            <!-- 🚨 Использован link.id вместо index -->
             <NuxtLink 
               v-for="link in navLinks" 
               :key="link.id"
@@ -38,7 +33,6 @@
           </div>
           <div class="link-group">
             <h4 class="link-group-title">Документы</h4>
-            <!-- 🚨 Использован link.id вместо index -->
             <NuxtLink 
               v-for="link in legalLinks" 
               :key="link.id"
@@ -51,12 +45,10 @@
         </div>
       </div>
 
-      <!-- Нижняя часть -->
       <div class="footer-bottom">
         <div class="footer-bottom-inner">
           <p class="copyright">&copy; {{ currentYear }} Brand Clothing. {{ copyright }}</p>
           
-          <!-- Данные о разработчике -->
           <a 
             :href="developer.url" 
             target="_blank" 
@@ -81,12 +73,10 @@ const currentYear = new Date().getFullYear()
 const store = useFooterStore()
 const { navLinks, legalLinks, brandDescription, copyright, developer, contactLinks } = storeToRefs(store)
 
-// 🚨 ДОБАВЛЕНО: Загрузка данных для SSR
 const { data } = await useAsyncData('footer-data', async () => {
   return await store.loadFooterData()
 })
 
-// 🚨 ДОБАВЛЕНО: Гидратация клиента (чтобы футер не пропадал при переходе по страницам)
 if (data.value && !store.brandDescription) {
   store.brandDescription = data.value.brandDescription;
   store.copyright = data.value.copyright;
@@ -105,6 +95,6 @@ if (data.value && !store.brandDescription) {
   display: inline-block;
   margin-bottom: 1rem;
   line-height: 0;
-  color: #ffffff; /* Делает currentColor внутри SVG белым */
+  color: #ffffff;
 }
 </style>

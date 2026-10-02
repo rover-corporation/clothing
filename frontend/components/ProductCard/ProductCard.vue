@@ -17,7 +17,6 @@
         <span class="prod-price">{{ prodObj.price }} ₽</span>
         
         <div class="prod-action">
-          <!-- Стили кнопки теперь полностью контролируются внутри CtaButton.vue -->
           <!-- <CtaButton>
             Связаться
           </CtaButton> -->

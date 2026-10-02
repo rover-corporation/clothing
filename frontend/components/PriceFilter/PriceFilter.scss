@@ -1,4 +1,3 @@
-  // 🔥 Стили для двойного ползунка
   .price-filter
   {
     margin-bottom: 20px;
@@ -7,7 +6,7 @@
   .range-slider {
     position: relative;
     height: 6px;
-    margin: 1.5rem 0.25rem; // Отступы по бокам, чтобы тени ползунков не обрезались
+    margin: 1.5rem 0.25rem;
     
     .slider-track {
       position: absolute;
@@ -21,7 +20,7 @@
     .slider-range {
       position: absolute;
       height: 100%;
-      background: #2563eb; // Фирменный акцентный цвет
+      background: #2563eb;
       border-radius: 3px;
       transition: left 0.2s ease, right 0.2s ease;
     }
@@ -33,12 +32,11 @@
       width: 100%;
       height: 100%;
       background: transparent;
-      pointer-events: none; // Клики проходят сквозь трек, но не сквозь thumb
+      pointer-events: none;
       -webkit-appearance: none;
       appearance: none;
       margin: 0;
       
-      // Стилизация ползунка для WebKit (Chrome, Safari, Edge)
       &::-webkit-slider-thumb {
         pointer-events: auto;
         -webkit-appearance: none;
@@ -50,7 +48,7 @@
         box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
         cursor: grab;
         transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
-        margin-top: -8px; // Центрирование относительно трека высотой 6px
+        margin-top: -8px;
         
         &:hover {
           transform: scale(1.1);
@@ -63,7 +61,6 @@
         }
       }
       
-      // Стилизация ползунка для Firefox
       &::-moz-range-thumb {
         pointer-events: auto;
         width: 22px;
@@ -84,7 +81,6 @@
         }
       }
       
-      // Скрываем стандартные треки браузеров
       &::-webkit-slider-runnable-track {
         background: transparent;
         height: 6px;

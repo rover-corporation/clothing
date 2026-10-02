@@ -1,5 +1,4 @@
 <template>
-  <!-- Добавляем v-if="heading", чтобы секция не рендерилась пустой -->
   <section v-if="heading" class="features-grid" id="about">
     <div class="container">
       <div class="features-header">
@@ -8,7 +7,6 @@
       </div>
       
       <div class="features-container">
-        <!-- Используем item.id в качестве ключа вместо index -->
         <div 
           v-for="item in features" 
           :key="item.id" 
@@ -30,22 +28,15 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { useBrandFeaturesStore } from '~/stores/brandFeaturesStore' // Убедитесь, что путь правильный
+import { useBrandFeaturesStore } from '~/stores/brandFeaturesStore' 
 
 const store = useBrandFeaturesStore()
-// storeToRefs позволяет использовать переменные в шаблоне напрямую
 const { heading, subtitle, features } = storeToRefs(store)
 
-// 1. Указываем уникальный ключ 'brand-features-data'
-// 2. Вызываем правильный метод loadBrandFeatures
-// 3. Сохраняем результат в переменную data
 const { data } = await useAsyncData('brand-features-data', async () => {
   return await store.loadBrandFeatures()
 })
 
-// 4. СИНХРОНИЗАЦИЯ ДЛЯ SSR:
-// Если сервер передал данные в браузер (data.value), но стор Pinia оказался пуст,
-// мы вручную кладем данные обратно в стор.
 if (data.value && !store.heading) {
   store.heading = data.value.heading;
   store.subtitle = data.value.subtitle;
