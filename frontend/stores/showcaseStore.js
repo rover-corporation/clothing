@@ -13,7 +13,6 @@ export const useShowcaseStore = defineStore('showcaseStore', () => {
     const error = ref(null);
 
     const loadShowcaseData = async () => {
-        // Если уже есть данные, отдаем их для SSR
         if (heading.value) return { heading: heading.value, subtitle: subtitle.value, items: items.value };
 
         isLoading.value = true;
@@ -32,15 +31,11 @@ export const useShowcaseStore = defineStore('showcaseStore', () => {
 
                 if (data.items) {
                     items.value = data.items.map((item) => {
-                        // 1. Формируем картинку
                         let imageUrl = '';
                         if (item.image) {
                             const imgObj = item.image.data?.attributes || item.image;
                             imageUrl = `${baseUrl}${imgObj.url}`;
                         }
-
-                        // 2. Превращаем массив объектов Strapi в простой массив строк
-                        // [{text: "Шёлк"}] ---> ["Шёлк"]
                         const cleanFeatures = item.features ? item.features.map((f) => f.text) : [];
 
                         return {
@@ -49,7 +44,7 @@ export const useShowcaseStore = defineStore('showcaseStore', () => {
                             description: item.description,
                             image: imageUrl,
                             badge: item.badge,
-                            features: cleanFeatures // передаем очищенный массив строк
+                            features: cleanFeatures
                         };
                     });
                 }

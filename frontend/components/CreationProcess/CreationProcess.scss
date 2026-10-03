@@ -51,7 +51,6 @@
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
   }
 
-  // Соединительная линия на десктопе
   @media (min-width: 1024px) {
     &:not(:last-child)::after {
       content: '';
@@ -94,7 +93,6 @@
   font-size: 0.95rem;
 }
 
-// Адаптив для мобильных: убираем линии, уменьшаем отступы
 @media (max-width: 767px) {
   .creation-process {
     padding: 3.5rem 0;

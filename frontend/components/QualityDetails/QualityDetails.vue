@@ -39,12 +39,11 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { useQualityDetailsStore } from '~/stores/qualityDetailsStore' // ваш путь
+import { useQualityDetailsStore } from '~/stores/qualityDetailsStore'
 
 const store = useQualityDetailsStore()
 const { heading, description, features, image } = storeToRefs(store)
 
-// Загрузка и синхронизация SSR
 const { data } = await useAsyncData('quality-details-data', async () => {
   return await store.loadQualityDetails()
 })

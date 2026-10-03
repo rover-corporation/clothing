@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-// Импортируйте вашу функцию запроса
 import { useFooterApi } from "~/api/footer";
 
 export const useFooterStore = defineStore('footerStore', () => {
@@ -17,7 +16,6 @@ export const useFooterStore = defineStore('footerStore', () => {
     const error = ref(null);
 
     const loadFooterData = async () => {
-        // Защита от повторных запросов (если copyright уже загружен)
         if (copyright.value) {
             return {
                 navLinks: navLinks.value,
@@ -41,7 +39,6 @@ export const useFooterStore = defineStore('footerStore', () => {
                 brandDescription.value = data.brandDescription;
                 copyright.value = data.copyright;
 
-                // Универсальная функция для маппинга ссылок (чтобы не писать 3 раза одно и то же)
                 const mapLinks = (linksArray) => {
                     return linksArray ? linksArray.map((link) => ({
                         id: link.id,

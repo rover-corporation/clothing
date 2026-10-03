@@ -15,7 +15,6 @@
   }
 }
 
-// 🔥 Явные отступы между заголовком и текстом
 .section-heading {
   margin-bottom: 1rem;
   line-height: 1.2;
@@ -52,11 +51,10 @@
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
 
-  // 🔥 НОВОЕ: Раскидываем текст и иконку по краям
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem; // Отступ, если текст слишком длинный
+  gap: 1rem;
 
   &:hover {
     background: #f9fafb;
@@ -64,24 +62,21 @@
 
   &.active {
     background: #f1f5f9;
-    color: #2563eb; // Можно поменять на #111827 (черный), если хотите более строгий стиль
+    color: #2563eb;
 
-    // 🔥 НОВОЕ: При активном классе вращаем иконку на 45 градусов (Плюс превращается в Крестик)
     .faq-icon {
       transform: rotate(45deg);
     }
   }
 
-  // 🔥 НОВОЕ: Базовые стили для иконки
   .faq-icon {
-    flex-shrink: 0; // Запрещаем иконке сжиматься, если вопрос занимает 2 строки
+    flex-shrink: 0; 
     width: 20px;
     height: 20px;
-    transition: transform 0.3s ease; // Плавная анимация поворота
+    transition: transform 0.3s ease; 
   }
 }
 
-// 🔥 Надёжная анимация аккордеона (без Vue <transition>)
 .faq-answer {
   max-height: 0;
   overflow: hidden;
@@ -96,7 +91,7 @@
   }
 
   &.open {
-    max-height: 1000px; // Достаточно большое значение для любого текста
+    max-height: 1000px;
     opacity: 1;
   }
 }

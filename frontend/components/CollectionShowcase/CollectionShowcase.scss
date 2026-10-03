@@ -11,7 +11,6 @@ $color-border: #e5e7eb;
 }
 
 
-/* --- Заголовки --- */
 .showcase-header {
   text-align: center;
   margin-bottom: 4rem;
@@ -38,33 +37,27 @@ $color-border: #e5e7eb;
   line-height: 1.6;
 }
 
-/* --- Слайдер Layout --- */
 .slider-wrapper {
   position: relative;
 }
 
-// Изменили название класса
 .gallery-layout {
   display: grid;
   grid-template-columns: 1fr;
   gap: 2.5rem;
   
   @media (min-width: 992px) {
-    grid-template-columns: 1fr 1fr; // 50/50 десктоп
+    grid-template-columns: 1fr 1fr; 
     gap: 4rem;
-    /* Убрали align-items: center, чтобы колонки были одинаковой высоты */
     align-items: stretch; 
   }
 }
 
-/* --- Левая часть: Изображение --- */
 .slide-visual {
   width: 100%;
   border-radius: 12px;
   overflow: hidden;
   background: $color-bg-light;
-  
-  // Фиксируем высоту контейнера, чтобы верстка не прыгала при анимации
   aspect-ratio: 4 / 5;
   
   @media (min-width: 992px) {
@@ -81,11 +74,10 @@ $color-border: #e5e7eb;
   display: block;
 }
 
-/* --- Правая часть: Текст --- */
 .slide-info {
   display: flex;
   flex-direction: column;
-  justify-content: space-between; // Прижимает контролы к низу
+  justify-content: space-between;
   height: 100%;
   padding-bottom: 1rem;
 }
@@ -93,7 +85,6 @@ $color-border: #e5e7eb;
 .info-content {
   margin-bottom: 3rem;
 }
-/* --- Левая часть: Изображение --- */
 .slide-visual {
   width: 100%;
   border-radius: 12px;
@@ -112,12 +103,11 @@ $color-border: #e5e7eb;
   display: block;
   
   @media (min-width: 992px) {
-    aspect-ratio: 3 / 4; // Более вытянутое на десктопе
+    aspect-ratio: 3 / 4;
     max-height: 700px;
   }
 }
 
-/* --- Правая часть: Текст --- */
 .slide-info {
   display: flex;
   flex-direction: column;
@@ -184,7 +174,6 @@ $color-border: #e5e7eb;
   }
 }
 
-/* --- Управление слайдером --- */
 .slider-controls {
   display: flex;
   align-items: center;
@@ -193,7 +182,6 @@ $color-border: #e5e7eb;
   border-top: 1px solid $color-border;
 }
 
-/* Точки как линии */
 .gallery-dots {
   display: flex;
   gap: 0.5rem;
@@ -218,7 +206,6 @@ $color-border: #e5e7eb;
   }
 }
 
-/* Стрелки */
 .gallery-arrows {
   display: flex;
   gap: 0.5rem;
@@ -249,7 +236,6 @@ $color-border: #e5e7eb;
   }
 }
 
-/* --- Анимации Vue --- */
 .slider-fade-enter-active,
 .slider-fade-leave-active {
   transition: opacity 0.5s ease, transform 0.5s ease;
@@ -273,7 +259,6 @@ $color-border: #e5e7eb;
   }
 }
 
-/* Базовые стили состояний */
 .showcase-loading, .showcase-error, .showcase-empty {
   display: flex;
   flex-direction: column;

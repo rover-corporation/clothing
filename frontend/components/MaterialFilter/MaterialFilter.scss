@@ -13,13 +13,12 @@
     align-items: center;
     gap: 0.5rem;
 
-    // Премиальная акцентная точка перед заголовком
     &::before {
       content: '';
       display: block;
       width: 6px;
       height: 6px;
-      background: #2563eb; // Твой акцентный синий
+      background: #2563eb; 
       border-radius: 50%;
       box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
     }
@@ -28,33 +27,31 @@
 .materials-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem; // Больше воздуха между кнопками
+  gap: 0.75rem;
   max-height: 270px;
   padding: 5px;
   overflow-y: auto;
 
-  /* === 1. Стандарт для Firefox и современных браузеров === */
-  scrollbar-width: thin; /* Делает скроллбар тонким */
-  scrollbar-color: #b0b0b0 transparent; /* Цвет ползунка и цвет фона (прозрачный) */
+  scrollbar-width: thin; 
+  scrollbar-color: #b0b0b0 transparent; 
 
-  /* === 2. Кастомный скроллбар для Chrome, Edge, Safari (WebKit) === */
   &::-webkit-scrollbar {
-    width: 6px; /* Ширина вертикального скроллбара */
+    width: 6px; 
   }
 
   &::-webkit-scrollbar-track {
-    background: transparent; /* Прозрачный фон дорожки (чтобы не утяжелять дизайн) */
-    border-radius: 10px;     /* Скругление дорожки */
+    background: transparent; 
+    border-radius: 10px;   
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: #b0b0b0; /* Цвет самого ползунка (светло-серый) */
-    border-radius: 10px;       /* Круглый ползунок */
+    background-color: #b0b0b0;
+    border-radius: 10px;
   }
 
-  /* Эффект при наведении на ползунок */
+
   &::-webkit-scrollbar-thumb:hover {
-    background-color: #888888; /* Чуть темнее при наведении для отзывчивости */
+    background-color: #888888;
   }
 }
   .material-btn {
@@ -64,12 +61,11 @@
     justify-content: center;
     padding: 0.6rem 1.25rem;
     
-    // Стеклянный эффект для неактивных кнопок
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(4px);
     
     border: 1px solid rgba(209, 213, 219, 0.6);
-    border-radius: 999px; // Идеальная таблетка (pill shape)
+    border-radius: 999px;
     
     
     font-size: 0.875rem;
@@ -78,9 +74,8 @@
     
     cursor: pointer;
     user-select: none;
-    overflow: hidden; // Чтобы блик не вылезал за границы
+    overflow: hidden;
     
-    // 🔥 Пружинистая анимация (Spring physics)
     transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 
     &:hover {
@@ -91,21 +86,17 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
-    // Тактильный отклик при нажатии
     &:active {
       transform: scale(0.95) translateY(0);
       transition-duration: 0.1s;
     }
 
-    /* 🔥 Стили для активного (выбранного) материала */
     &.is-active {
       background: #2663eb;
-      // border-color: #111827;
       color: #ffffff;
       box-shadow: 0 6px 20px rgba(17, 24, 39, 0.25);
-      transform: scale(1.05); // Легкое "всплытие"
+      transform: scale(1.05);
 
-      // Бесконечный блик (Shimmer effect)
       &::after {
         content: '';
         position: absolute;
@@ -124,7 +115,6 @@
       }
     }
 
-    // Доступность: обводка при навигации с клавиатуры
     &:focus-visible {
       outline: 2px solid #2563eb;
       outline-offset: 3px;
@@ -132,13 +122,11 @@
   }
 }
 
-// 🔥 Анимация блика
 @keyframes shimmer {
   0% { left: -100%; }
   100% { left: 200%; }
 }
 
-// 🔥 Адаптив для очень маленьких экранов (320px)
 @media (max-width: 360px) {
   .material-filter {
     .material-btn {

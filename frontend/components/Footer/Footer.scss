@@ -97,7 +97,6 @@
   }
 }
 
-/* 🔥 Нижняя часть футера */
 .footer-bottom {
   border-top: 1px solid #374151;
   padding-top: 2rem;
@@ -112,11 +111,11 @@
 
   @media (min-width: 768px) {
     flex-direction: row;
-    justify-content: space-between; // Распределяет: копирайт слева, RoVer справа (но не в край)
+    justify-content: space-between;
     align-items: center;
     text-align: left;
-    max-width: 90%; // Не прижимать к самым краям контейнера
-    margin: 0 auto; // Центрируем блок внутри .container
+    max-width: 90%;
+    margin: 0 auto; 
   }
 }
 
@@ -126,7 +125,6 @@
   margin: 0;
 }
 
-/* 🔥🔥 RoVer digital: огненный стиль */
 .rover-credit {
   text-decoration: none;
   font-size: 0.875rem;
@@ -134,7 +132,6 @@
   transition: color 0.3s ease;
 
   .rover-name {
-    // Градиентный текст (оранжево-огненный)
     background: linear-gradient(135deg, #f97316, #fb923c, #fdba74);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -144,7 +141,6 @@
     position: relative;
     display: inline-block;
 
-    // Лёгкое свечение при ховере
     &::after {
       content: '';
       position: absolute;
@@ -162,7 +158,6 @@
     color: #9ca3af;
 
     .rover-name {
-      // Усиливаем свечение
       filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.5));
       
       &::after {
@@ -172,7 +167,6 @@
   }
 }
 
-/* 📱 Мобильный адаптив */
 @media (max-width: 767px) {
   .main-footer {
     padding: 2.5rem 0 1rem;

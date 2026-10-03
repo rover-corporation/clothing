@@ -9,8 +9,6 @@
         </div>
 
         <div class="nav-menu" :class="{ 'nav-menu--active': isMenuOpen }">
-          <!-- 1. Добавлено обращение к headerStore.headerLinks -->
-          <!-- 2. Добавлен обязательный параметр :key="item.id" -->
           <NuxtLink 
             v-for="item in headerStore.headerLinks" 
             :key="item.id"
@@ -39,12 +37,9 @@
 <script setup>
 import Logo from '~/assets/svg/Logo.vue';
 import { useHeaderStore } from '~/stores/headerStore';
-// ref и watch можно не импортировать руками, Nuxt делает это автоматически (Auto-imports)
-// но если импортировали — ничего страшного, это не ошибка
 
 const headerStore = useHeaderStore()
 
-// Вызываем загрузку данных перед рендерингом (SSR)
 await useAsyncData('header-links-data', async () => {
   await headerStore.loadHeaderLinks()
   return true 
@@ -52,7 +47,6 @@ await useAsyncData('header-links-data', async () => {
 
 
 
-// Логика бургер-меню
 const isMenuOpen = ref(false)
 
 const toggleMenu = () => {
@@ -64,7 +58,6 @@ const closeMenuAfterLink = () =>
 }
 
 
-// Блокировка скролла при открытом меню
 watch(isMenuOpen, (isOpen) => {
   if (isOpen) {
     document.body.style.overflow = 'hidden';
