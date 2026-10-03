@@ -57,9 +57,9 @@
                         <!-- <SizeFilter 
                             v-model="selectedSizes" 
                             :available-sizes="sizes"
-                        /> -->
+                        />
                         
-                        <!-- <MaterialFilter 
+                        <MaterialFilter 
                             v-model="selectedMaterials" 
                             :available-materials="materials" 
                             title="Материал"

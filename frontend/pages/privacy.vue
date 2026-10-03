@@ -1,5 +1,5 @@
 <template>
-  <Legal :content="content" />
+  <Legal :content="content" :title="pageTitle" :last-updated="lastUpdated" />
 </template>
 
 <script setup>
@@ -12,7 +12,7 @@ const privacyStore = usePrivacyStore()
 
 // Запрашиваем данные перед рендерингом
 await useAsyncData('privacy-data', async () => {
-  await privacyStore.fetchPrivacyPolicy()
+  await privacyStore.loadPolicyData()
   return true
 })
 
@@ -23,7 +23,7 @@ definePageMeta({
 layout: 'lay'
 })
 
-const { content } = storeToRefs(usePrivacyStore())
+const { content, pageTitle, lastUpdated } = storeToRefs(usePrivacyStore())
 
 
 useHead({
