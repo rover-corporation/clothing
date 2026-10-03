@@ -1,14 +1,9 @@
 .legal-page {
-  padding: 3rem 0;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
   background: #ffffff;
   min-height: 70vh;
 }
-
-// .legal-content {
-//   max-width: 800px;
-//   margin: 0 auto;
-//   padding: 0 1.25rem; /* 🔥 Безопасные отступы для 320px */
-// }
 
 .legal-title {
   font-size: 1.6rem; /* 🔥 Уменьшено для мобилок */
@@ -38,23 +33,40 @@
   gap: 2rem;
 }
 
-.legal-section {
-  .section-title {
-    font-size: 1.1rem;
+:deep(.markdown-body) {
+  color: #374151;
+  font-size: 16px;
+  line-height: 1.8;
+
+  /* Все внутренние теги стилизуем внутри :deep */
+  h1, h2, h3, h4 {
+    color: #111827;
+    margin-top: 2em;
+    margin-bottom: 1em;
     font-weight: 600;
-    color: #1f2937;
-    margin-bottom: 0.75rem;
-    line-height: 1.3;
   }
 
-  .section-text {
-    color: #4b5563;
-    line-height: 1.6;
-    font-size: 0.95rem;
+  p {
+    margin-bottom: 1.5em;
+  }
 
-    p {
-      margin-bottom: 0.6rem;
-      &:last-child { margin-bottom: 0; }
+  ul, ol {
+    margin-bottom: 1.5em;
+    padding-left: 1.5em;
+    
+    li {
+      margin-bottom: 0.5em;
     }
+  }
+
+  strong {
+    font-weight: 600;
+    color: #111827;
+  }
+
+  a {
+    color: #2563eb;
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
 }

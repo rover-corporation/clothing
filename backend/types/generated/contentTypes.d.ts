@@ -823,6 +823,7 @@ export interface ApiPersonalPersonal extends Struct.SingleTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    content: Schema.Attribute.RichText;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -835,7 +836,6 @@ export interface ApiPersonalPersonal extends Struct.SingleTypeSchema {
       Schema.Attribute.Private;
     pageTitle: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
-    sections: Schema.Attribute.Component<'blocks.section', true>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

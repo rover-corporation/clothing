@@ -1,5 +1,5 @@
 <template>
-  <Legal :content="content" />
+  <Legal :content="content" :title="pageTitle" :last-updated="lastUpdated" />
 </template>
 
 <script setup>
@@ -11,7 +11,7 @@ import { useHead } from 'nuxt/app'
 const personalStore = usePersonalStore()
 
 await useAsyncData('personal-data', async () => {
-  await personalStore.fetchPersonal()
+  await personalStore.loadPolicyData()
   return true
 })
 
@@ -21,7 +21,8 @@ layout: 'lay'
 })
 
 
-const { content } = storeToRefs(personalStore)
+const { content, pageTitle, lastUpdated } = storeToRefs(personalStore)
+console.log(content.value, pageTitle.value, lastUpdated.value)
 
 
 useHead({

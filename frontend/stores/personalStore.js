@@ -1,68 +1,47 @@
-// stores/privacyStore.js
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import { usePersonalApi } from '~/api/personal'
+import { defineStore } from "pinia";
+import { ref } from "vue";
+import { usePersonalApi } from "~/api/personal";
 
 export const usePersonalStore = defineStore('personalStore', () => {
-    // Оставляем дефолтные значения (или пустые), чтобы страница не была пустой до загрузки
-    const content = ref({
-        pageTitle: "",
-        lastUpdated: "",
-        sections: []
-    })
+    const pageTitle = ref("");
+    const lastUpdated = ref("");
+    const content = ref(""); // Сюда прилетит весь текст в формате Markdown
     
-    const isLoading = ref(false)
-    const error = ref(null)
+    const isLoading = ref(false);
+    const error = ref(null);
 
-    // Вспомогательная функция для форматирования даты в "24 сентября 2026 г."
-    const formatDate = (dateString) => {
-        if (!dateString) return ""
-        const date = new Date(dateString)
-        const options = { day: 'numeric', month: 'long', year: 'numeric' }
-        return date.toLocaleDateString('ru-RU', options) + ' г.'
-    }
+    const loadPolicyData = async () => {
+        if (pageTitle.value) return { pageTitle: pageTitle.value }; // SSR защита
 
-    const fetchPersonal = async () => {
-        // Если данные уже загружены, не делаем запрос повторно
-        if (content.value.pageTitle) return
-
-        isLoading.value = true
-        error.value = null
+        isLoading.value = true;
+        error.value = null;
 
         try {
-            const response = await usePersonalApi()
-            
-            // Strapi возвращает { data: { ... } }, достаем нужную часть
-            // Поддержка как Strapi v4 (attributes), так и v5 (плоская структура)
-            const data = response.data?.attributes || response.data
+            const response = await usePersonalApi();
 
-            if (data) {
-                content.value = {
-                    pageTitle: data.pageTitle || 'Политика обработки персональных данных',
-                    lastUpdated: formatDate(data.lastUpdated),
-                    // Маппим секции
-                    sections: (data.sections || []).map(sec => ({
-                        title: sec.title,
-                        // Strapi отдает long text как одну строку. 
-                        // Мы разбиваем ее по переносу строки (Enter), убираем пустые и получаем массив строк!
-                        content: sec.content 
-                            ? sec.content.split('\n').map(p => p.trim()).filter(p => p.length > 0)
-                            : []
-                    }))
-                }
+            if (response && response.data) {
+                const attr = response.data.attributes || response.data;
+                
+                pageTitle.value = attr.pageTitle;
+                lastUpdated.value = attr.lastUpdated;
+                content.value = attr.content;
             }
-        } catch (err) {
-            console.error('Ошибка при загрузке Политики обработки персональных данных:', err)
-            error.value = err
-        } finally {
-            isLoading.value = false
-        }
-    }
 
-    return { 
-        content, 
-        isLoading, 
-        error, 
-        fetchPersonal 
-    }
-})
+            
+
+            return { 
+                pageTitle: pageTitle.value, 
+                lastUpdated: lastUpdated.value, 
+                content: content.value 
+            };
+            
+        } catch (e) {
+            console.error('Ошибка загрузки политики:', e);
+            error.value = e.message || 'Ошибка загрузки данных';
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
+    return { pageTitle, lastUpdated, content, isLoading, error, loadPolicyData };
+});

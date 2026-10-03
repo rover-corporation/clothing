@@ -17,10 +17,8 @@
     "lastUpdated": {
       "type": "date"
     },
-    "sections": {
-      "type": "component",
-      "component": "blocks.section",
-      "repeatable": true
+    "content": {
+      "type": "richtext"
     }
   }
 }
